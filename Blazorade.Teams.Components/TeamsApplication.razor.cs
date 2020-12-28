@@ -25,7 +25,20 @@ namespace Blazorade.Teams.Components
         public async Task OnGotContextAsync(Context context)
         {
             await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
+            //await this.TeamsInterop.Authentication.GetAuthTokenAsync(new AuthTokenRequest(), this.OnGotAuthTokenSuccessAsync, this.OnGotAuthTokenFailureAsync);
             await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
+        }
+
+        [JSInvokable]
+        public async Task OnGotAuthTokenSuccessAsync(string token)
+        {
+
+        }
+
+        [JSInvokable]
+        public async Task OnGotAuthTokenFailureAsync(string reason)
+        {
+            await this.TeamsInterop.AppInitialization.NotifyFailureAsync(reason, FailedReason.AuthFailed);
         }
 
 

@@ -9,10 +9,7 @@ namespace Blazorade.Teams.Components.Interop
 {
     public class ApplicationInitializationModule : InteropModuleBase
     {
-        public ApplicationInitializationModule(IJSRuntime jsRuntime) : base(jsRuntime)
-        {
-            this.JSRuntime = jsRuntime ?? throw new ArgumentNullException(nameof(jsRuntime));
-        }
+        public ApplicationInitializationModule(IJSRuntime jsRuntime) : base(jsRuntime) { }
 
 
 

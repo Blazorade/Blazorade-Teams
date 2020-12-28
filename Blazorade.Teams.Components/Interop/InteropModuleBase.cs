@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,17 @@ namespace Blazorade.Teams.Components.Interop
             var teamsModule = await this.GetTeamsSdkJSModuleAsync();
             return await (_BlazoradeTeamsJSModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeTeams.js").AsTask());
         }
+
+        protected void ValidateCallbackMethod(MethodInfo method)
+        {
+            var attribute = method.GetCustomAttribute<JSInvokableAttribute>();
+            if (null == attribute)
+            {
+                throw new ArgumentException($"The given callback must be a defined method decorate with the '{typeof(JSInvokableAttribute).FullName}' attribute.", nameof(method));
+            }
+        }
+
+
 
         private Task<IJSObjectReference> _TeamsSdkJSModule;
         private protected Task<IJSObjectReference> GetTeamsSdkJSModuleAsync()

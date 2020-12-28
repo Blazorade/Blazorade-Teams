@@ -10,12 +10,12 @@ namespace Blazorade.Teams.Components.Interop
     internal class CallbackDefinition
     {
 
-        public static CallbackDefinition Create(object target, string methodName)
+        public static CallbackDefinition Create(Delegate method)
         {
             return new CallbackDefinition
             {
-                Target = DotNetObjectReference.Create(target),
-                MethodName = methodName
+                Target = DotNetObjectReference.Create(method.Target),
+                MethodName = method.Method.Name
             };
         }
 
