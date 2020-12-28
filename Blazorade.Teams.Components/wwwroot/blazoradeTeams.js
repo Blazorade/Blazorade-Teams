@@ -1,5 +1,0 @@
-﻿
-
-window.blazoradeTeams = {
-
-}
