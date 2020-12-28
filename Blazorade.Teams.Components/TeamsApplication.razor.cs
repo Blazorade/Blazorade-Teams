@@ -12,9 +12,6 @@ namespace Blazorade.Teams.Components
     partial class TeamsApplication
     {
 
-        [Inject]
-        protected BlazoradeTeamsInteropModule TeamsInterop { get; set; }
-
         [JSInvokable]
         public async Task OnAppInitializedAsync()
         {
