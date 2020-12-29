@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Components.Interop;
+﻿using Blazorade.Teams.Components.Configuration;
+using Blazorade.Teams.Components.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,31 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<BlazoradeTeamsInteropModule>()
                 .AddScoped<ApplicationInitializationModule>()
                 .AddScoped<AuthenticationModule>()
+                ;
+        }
+
+        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<AzureAdApplicationOptions> config)
+        {
+            return services
+                .AddSingleton((p) =>
+                {
+                    var options = new AzureAdApplicationOptions();
+                    config?.Invoke(options);
+                    return options;
+                })
+                .AddBlazoradeTeams();
+        }
+
+        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<IServiceProvider, AzureAdApplicationOptions> config)
+        {
+            return services
+                .AddSingleton((p) =>
+                {
+                    var options = new AzureAdApplicationOptions();
+                    config?.Invoke(p, options);
+                    return options;
+                })
+                .AddBlazoradeTeams()
                 ;
         }
     }

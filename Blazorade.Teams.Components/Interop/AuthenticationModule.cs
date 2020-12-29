@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using Blazorade.Teams.Components.Configuration;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +10,14 @@ namespace Blazorade.Teams.Components.Interop
 {
     public class AuthenticationModule : InteropModuleBase
     {
-        public AuthenticationModule(IJSRuntime jsRuntime) : base(jsRuntime) { }
+        public AuthenticationModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
 
 
-        public async Task GetAuthTokenAsync(AuthTokenRequest tokenRequest, Func<string, Task> successCallback, Func<string, Task> failureCallback)
+        internal async Task GetTokenAsync(Context context, Func<AuthenticationResult, Task> successCallback, Func<string, Task> failureCallback)
         {
-            this.ValidateCallbackMethod(successCallback.Method);
-            this.ValidateCallbackMethod(failureCallback.Method);
-
-            var module = await this.GetBlazoradeTeamsJSModuleAsync();
-            await module.InvokeVoidAsync(
-                "authentication_getAuthToken",
-                tokenRequest,
-                CallbackDefinition.Create(successCallback),
-                CallbackDefinition.Create(failureCallback)
-            );
+            var module = await this.GetBlazoradeMsalProxyModuleAsync();
+            await module.InvokeVoidAsync("getTokenSilent", new MsalConfig(this.ApplicationSettings), context, CallbackDefinition.Create(successCallback), CallbackDefinition.Create(failureCallback));
         }
+
     }
 }

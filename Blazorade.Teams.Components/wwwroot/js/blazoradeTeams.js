@@ -17,22 +17,7 @@ export function getContext(callback) {
 
 
 
-export function authentication_getAuthToken(request, successCallback, failureCallback) {
-    console.log("getAuthToken", request);
-    request.successCallback = function (token) {
-        console.log("gotAuthToken", token);
-        invokeCallback(successCallback, token);
-    };
-    request.failureCallback = function (reason) {
-        console.error("gotAuthToken", reason);
-        invokeCallback(failureCallback, reason);
-    }
-    microsoftTeams.authentication.getAuthToken(request);
-}
-
-
-
-function invokeCallback(callback, ...args) {
+export function invokeCallback(callback, ...args) {
     console.log("invokeCallback", callback, args);
     if (callback && callback.target && callback.methodName) {
         callback.target.invokeMethodAsync(callback.methodName, ...args);

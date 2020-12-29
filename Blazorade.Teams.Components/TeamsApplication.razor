@@ -1,4 +1,11 @@
 ﻿@inherits BlazoradeComponentBase
 @inject BlazoradeTeamsInteropModule TeamsInterop
 
-@this.ChildContent
+@if (this.ShowApplicationTemplate)
+{
+    @this.ApplicationTemplate(this.ApplicationContext)
+}
+else
+{
+    @this.ChildContent
+}

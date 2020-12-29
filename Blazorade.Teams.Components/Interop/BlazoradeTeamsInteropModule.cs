@@ -1,6 +1,8 @@
-﻿using Microsoft.JSInterop;
+﻿using Blazorade.Teams.Components.Configuration;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ namespace Blazorade.Teams.Components.Interop
 {
     public class BlazoradeTeamsInteropModule : InteropModuleBase
     {
-        public BlazoradeTeamsInteropModule(IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, AuthenticationModule authModule) : base(jsRuntime)
+        public BlazoradeTeamsInteropModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, AuthenticationModule authModule) : base(appOptions, jsRuntime)
         {
             this.AppInitialization = appInitModule ?? throw new ArgumentNullException(nameof(appInitModule));
             this.Authentication = authModule ?? throw new ArgumentNullException(nameof(authModule));
@@ -34,7 +36,6 @@ namespace Blazorade.Teams.Components.Interop
             var btm = await this.GetBlazoradeTeamsJSModuleAsync();
             await btm.InvokeVoidAsync("initialize", CallbackDefinition.Create(callback));
         }
-
 
     }
 }

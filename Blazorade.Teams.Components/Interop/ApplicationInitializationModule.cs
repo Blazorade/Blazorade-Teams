@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using Blazorade.Teams.Components.Configuration;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Blazorade.Teams.Components.Interop
 {
     public class ApplicationInitializationModule : InteropModuleBase
     {
-        public ApplicationInitializationModule(IJSRuntime jsRuntime) : base(jsRuntime) { }
+        public ApplicationInitializationModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
 
 
 
