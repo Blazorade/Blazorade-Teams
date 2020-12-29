@@ -15,17 +15,7 @@ export function getContext(callback) {
     });
 }
 
-export function appInitialization_notifyAppLoaded() {
-    microsoftTeams.appInitialization.notifyAppLoaded();
-}
 
-export function appInitialization_notifyFailure(failedRequest) {
-    microsoftTeams.appInitialization.notifyFailure(failedRequest);
-}
-
-export function appInitialization_notifySuccess() {
-    microsoftTeams.appInitialization.notifySuccess();
-}
 
 export function authentication_getAuthToken(request, successCallback, failureCallback) {
     console.log("getAuthToken", request);
@@ -39,6 +29,8 @@ export function authentication_getAuthToken(request, successCallback, failureCal
     }
     microsoftTeams.authentication.getAuthToken(request);
 }
+
+
 
 function invokeCallback(callback, ...args) {
     console.log("invokeCallback", callback, args);
