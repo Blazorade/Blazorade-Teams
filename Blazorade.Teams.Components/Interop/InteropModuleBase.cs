@@ -29,10 +29,10 @@ namespace Blazorade.Teams.Components.Interop
             return _BlazoradeTeamsJSModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeTeams.js").AsTask();
         }
 
-        private Task<IJSObjectReference> _BlazoradeMsalProxyModule;
-        internal Task<IJSObjectReference> GetBlazoradeMsalProxyModuleAsync()
+        private Task<IJSObjectReference> _BlazoradeMsalModule;
+        internal Task<IJSObjectReference> GetBlazoradeMsalModuleAsync()
         {
-            return _BlazoradeMsalProxyModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeMsalProxy.js").AsTask();
+            return _BlazoradeMsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeMsal.js").AsTask();
         }
 
         protected void ValidateCallbackMethod(MethodInfo method)

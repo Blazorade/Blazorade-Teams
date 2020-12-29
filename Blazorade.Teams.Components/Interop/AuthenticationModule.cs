@@ -15,7 +15,7 @@ namespace Blazorade.Teams.Components.Interop
 
         internal async Task GetTokenAsync(Context context, Func<AuthenticationResult, Task> successCallback, Func<string, Task> failureCallback)
         {
-            var module = await this.GetBlazoradeMsalProxyModuleAsync();
+            var module = await this.GetBlazoradeMsalModuleAsync();
             await module.InvokeVoidAsync("getTokenSilent", new MsalConfig(this.ApplicationSettings), context, CallbackDefinition.Create(successCallback), CallbackDefinition.Create(failureCallback));
         }
 
