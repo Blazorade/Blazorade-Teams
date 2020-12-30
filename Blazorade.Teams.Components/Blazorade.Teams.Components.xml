@@ -1,0 +1,412 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Blazorade.Teams.Components</name>
+    </assembly>
+    <members>
+        <member name="T:Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions">
+            <summary>
+            Options for configuring your application for authentication.
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions.#ctor">
+            <summary>
+            Creates a new instance.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions.ClientId">
+            <summary>
+            The application (client) ID of your Azure AD application.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions.TenantId">
+            <summary>
+            The tenant ID or tenant name ({tenant}.onmicrosoft.com) of the tenant your
+            application specified in <see cref="P:Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions.ClientId"/> is registered in.
+            </summary>
+        </member>
+        <member name="T:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule">
+            <summary>
+            The root module for facilitating communications with the Teams JavaScript SDK.
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Components.Interop.ApplicationInitializationModule)">
+            <summary>
+            Creates a new instance of the module class.
+            </summary>
+            <param name="appOptions">The application options configured on the app.</param>
+            <param name="jsRuntime"></param>
+            <param name="appInitModule"></param>
+            <remarks>
+            This class should not be initialized in code. It will be created automatically through Dependency Injection
+            and provided through the <see cref="P:Blazorade.Teams.Components.TeamsApplication.TeamsInterop"/> property.
+            </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.AppInitialization">
+            <summary>
+            A module that represents the <c>appInitialization</c> module in the Teams SDK.
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.GetContextAsync">
+            <summary>
+            Returns the context information loaded from Teams.
+            </summary>
+            <remarks>
+            This method is called for you when you use the <see cref="T:Blazorade.Teams.Components.TeamsApplication"/> component.
+            </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.InitializeAsync">
+            <summary>
+            Initializes your application with Teams.
+            </summary>
+            <remarks>
+            This method is invoked for you when you use the <see cref="T:Blazorade.Teams.Components.TeamsApplication"/> component.
+            </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.IsTeamsHostAvailableAsync">
+            <summary>
+            Determines whether the application has been loaded inside of Teams.
+            </summary>
+            <remarks>
+            <para>
+            If this method returns <c>false</c>, all the other methods on this module an its child modules
+            will also very likely fail.
+            </para>
+            <para>
+            You don't have to worry about this when using the <see cref="T:Blazorade.Teams.Components.TeamsApplication"/> component as the
+            root component on your pages, and putting your application content in the
+            <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate"/> template.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.GetTokenAsync(Blazorade.Teams.Components.Interop.Context)">
+            <summary>
+            Uses MSAL.js to get an access token for the logged in user.
+            </summary>
+            <param name="context">The Teams context to use when resolving the token.</param>
+            <remarks>
+            The access token returned by this method defines the scopes that have been defined on your Azure AD
+            application, which you configure in your application's startup class by using the
+            <see cref="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/> methods.
+            </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.AppIconPosition">
+            <summary>
+            Personal app icon y coordinate position.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.AppSessionId">
+            <summary>
+            Unique ID for the current session for use in correlating telemetry data.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.ChannelId">
+            <summary>
+            The Microsoft Teams ID for the channel with which the content is associated.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.ChannelName">
+            <summary>
+            The name for the channel with which the content is associated.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.ChannelRelativeUrl">
+            <summary>
+            The relative path to the SharePoint folder associated with the channel.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.ChannelType">
+            <summary>
+            The type of the channel with which the content is associated.
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item>Regular</item>
+            <item>Private</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.ChatId">
+            <summary>
+            The Microsoft Teams ID for the chat with which the content is associated.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.DefaultOneNoteSectionId">
+            <summary>
+            The OneNote section ID that is linked to the channel.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.EntityId">
+            <summary>
+            The developer-defined unique ID for the entity this content points to.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.FrameContext">
+            <summary>
+            The context where tab url is loaded (content, task, setting, remove, sidePanel).
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item>authentication</item>
+            <item>content</item>
+            <item>remove</item>
+            <item>settings</item>
+            <item>sidePanel</item>
+            <item>stage</item>
+            <item>task</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.GroupId">
+            <summary>
+            The Office 365 group ID for the team with which the content is associated. This field is available only when the identity permission is requested in the manifest.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.HostClientType">
+            <summary>
+            The type of the host client. Possible values are : android, ios, web, desktop, rigel.
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item>android</item>
+            <item>desktop</item>
+            <item>ios</item>
+            <item>rigel</item>
+            <item>web</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.IsCallingAllowed">
+            <summary>
+            Represents whether calling is allowed for the current logged in User.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.IsFullScreen">
+            <summary>
+            Indication whether the tab is in full-screen mode.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.IsMultiWindow">
+            <summary>
+            Indication whether the tab is in a pop out window.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.IsPSTNCallingAllowed">
+            <summary>
+            Represents whether PSTN calling is allowed for the current logged in User.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.IsTeamArchived">
+            <summary>
+            Indicates whether team is archived. Apps should use this as a signal to prevent any changes to content associated with archived teams.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.Locale">
+            <summary>
+            The current locale that the user has configured for the app formatted as languageId-countryId (for example, en-us).
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.LoginHint">
+            <summary>
+            A value suitable for use as a login_hint when authenticating with Azure AD. Because a malicious party can run your 
+            content in a browser, this value should be used only as a hint as to who the user is and never as proof of identity. 
+            This field is available only when the identity permission is requested in the manifest.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.MeetingId">
+            <summary>
+            Meeting Id used by tab when running in meeting context.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.OSLocaleInfo">
+            <summary>
+            More detailed locale info from the user's OS if available. Can be used together with the @microsoft/globe NPM 
+            package to ensure your app respects the user's OS date and time format configuration.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.ParentMessageId">
+            <summary>
+            The ID of the parent message from which this task module was launched. This is only available in task modules launched from bot cards.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.RingId">
+            <summary>
+            Current ring ID.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.SessionId">
+            <summary>
+            Unique ID for the current Teams session for use in correlating telemetry data.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.SharePoint">
+            <summary>
+            SharePoint context. This is only available when hosted in SharePoint.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.SubEntityId">
+            <summary>
+            The developer-defined unique ID for the sub-entity this content points to. This field should be used to restore to a 
+            specific state within an entity, such as scrolling to or activating a specific piece of content.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.TeamId">
+            <summary>
+            The Microsoft Teams ID for the team with which the content is associated.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.TeamName">
+            <summary>
+            The name for the team with which the content is associated.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.TeamSiteDomain">
+            <summary>
+            The domain of the root SharePoint site associated with the team.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.TeamSitePath">
+            <summary>
+            The relative path to the SharePoint site associated with the team.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.TeamSiteUrl">
+            <summary>
+            The root SharePoint site associated with the team.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.TeamType">
+            <summary>
+            The type of the team.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.TenantSKU">
+            <summary>
+            The type of license for the current users tenant.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.Theme">
+            <summary>
+            The current UI theme.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.Tid">
+            <summary>
+            The Azure AD tenant ID of the current user. Because a malicious party can run your content in a browser, 
+            this value should be used only as a hint as to who the user is and never as proof of identity. This field 
+            is available only when the identity permission is requested in the manifest.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.UserLicenseType">
+            <summary>
+            The license type for the current user.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.UserObjectId">
+            <summary>
+            The Azure AD object id of the current user. Because a malicious party run your content in a browser, 
+            this value should be used only as a hint as to who the user is and never as proof of identity. This field 
+            is available only when the identity permission is requested in the manifest.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.UserPrincipalName">
+            <summary>
+            The UPN of the current user. This may be an externally-authenticated UPN (e.g., guest users). Because a 
+            malicious party run your content in a browser, this value should be used only as a hint as to who the 
+            user is and never as proof of identity. This field is available only when the identity permission is 
+            requested in the manifest.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Context.UserTeamRole">
+            <summary>
+            The user's role in the team. Because a malicious party can run your content in a browser, 
+            this value should be used only as a hint as to the user's role, and never as proof of her role.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.LocaleInfo.Platform">
+            <summary>
+            
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item>windows</item>
+            <item>macos</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="T:Blazorade.Teams.Components.TeamsApplication">
+            <summary>
+            The root component for all application pages in your Microsoft Teams tab application.
+            </summary>
+            <remarks>
+            <para>
+            This component inherits from <see cref="T:Blazorade.Core.Components.BlazoradeComponentBase"/> and uses the
+            <see cref="P:Blazorade.Core.Components.BlazoradeComponentBase.ChildContent"/> template property to render content
+            that is shown while the component initializes your application.
+            </para>
+            </remarks>
+            <example>
+            <para>
+            The code sample below shows the basic structure for how you build your application pages using the
+            <see cref="T:Blazorade.Teams.Components.TeamsApplication"/> component.
+            </para>
+            <code>
+            &lt;TeamsApplication RequireAuthentication="true">
+                &lt;ApplicationTemplate Context="ctx">
+                    &lt;p>Here you will write your application.&lt;/p>
+                    &lt;p>The user has been properly authenticated as @ctx.AuthResult.IdTokenClaims["name"]&lt;/p>
+                &lt;/ApplicationTemplate>
+                &lt;HostNotAvailableTemplate>
+                    Seems that you did not load the app inside of Teams.
+                &lt;/HostNotAvailableTemplate>
+                &lt;ChildContent>
+                    Loading...
+                &lt;/ChildContent>
+            &lt;/TeamsApplication>
+            </code>
+            </example>
+        </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.RequireAuthentication">
+            <summary>
+            Set to <c>true</c> to have the component take care of authenticating the user.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate">
+            <summary>
+            The main template for your application.
+            </summary>
+            <remarks>
+            This template is rendered when the application has been properly initialized by this component.
+            </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.HostNotAvailableTemplate">
+            <summary>
+            A template that you can use to provide alternative content in cases when the Teams host is not available.
+            </summary>
+            <remarks>
+            This template is typically rendered when the application is not loaded by Teams.
+            </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.ApplicationContext">
+            <summary>
+            The application context.
+            </summary>
+            <remarks>
+            This context is provided as the context to the <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate"/> template.
+            </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Components.TeamsApplication.OnAfterRenderAsync(System.Boolean)">
+            <summary>
+            Controls the rendering of the component.
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Components.TeamsApplication.InitializeAsync">
+            <summary>
+            Handles the main initialization of the component.
+            </summary>
+            <remarks>
+            This should not be called if the Teams host context is not available.
+            </remarks>
+        </member>
+    </members>
+</doc>
