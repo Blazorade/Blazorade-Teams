@@ -26,13 +26,21 @@ namespace Blazorade.Teams.Components.Interop
         private Task<IJSObjectReference> _BlazoradeTeamsJSModule;
         protected Task<IJSObjectReference> GetBlazoradeTeamsJSModuleAsync()
         {
-            return _BlazoradeTeamsJSModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeTeams.js").AsTask();
+            return this.GetTeamsSdkModuleAsync()
+                .ContinueWith(state =>
+                {
+                    return (_BlazoradeTeamsJSModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeTeams.js").AsTask()).Result;
+                });
         }
 
         private Task<IJSObjectReference> _BlazoradeMsalModule;
         internal Task<IJSObjectReference> GetBlazoradeMsalModuleAsync()
         {
-            return _BlazoradeMsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeMsal.js").AsTask();
+            return this.GetMsalModuleAsync()
+                .ContinueWith(state =>
+                {
+                    return (_BlazoradeMsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeMsal.js").AsTask()).Result;
+                });
         }
 
         protected void ValidateCallbackMethod(MethodInfo method)
@@ -44,6 +52,18 @@ namespace Blazorade.Teams.Components.Interop
             }
         }
 
+
+        private Task<IJSObjectReference> _MsalModule;
+        private Task<IJSObjectReference> GetMsalModuleAsync()
+        {
+            return _MsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "https://alcdn.msftauth.net/browser/2.8.0/js/msal-browser.min.js").AsTask();
+        }
+
+        private Task<IJSObjectReference> _TeamsSdkModule;
+        private Task<IJSObjectReference> GetTeamsSdkModuleAsync()
+        {
+            return _TeamsSdkModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "https://statics.teams.cdn.office.net/sdk/v1.7.0/js/MicrosoftTeams.min.js").AsTask();
+        }
     }
 
 

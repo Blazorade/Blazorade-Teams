@@ -1,18 +1,41 @@
 ﻿
-export function initialize(callback) {
-    console.log("initializing", callback);
+export function initialize(args) {
+    console.log("initializing", args);
     microsoftTeams.initialize(() => {
         console.log("initialized");
-        invokeCallback(callback);
+        invokeCallback(args.successCallback, null);
     });
 }
 
-export function getContext(callback) {
-    console.log("getContext", callback);
+export function getContext(args) {
+    console.log("getContext", args);
     microsoftTeams.getContext((ctx) => {
         console.log("gotContext", ctx);
-        invokeCallback(callback, ctx);
+        invokeCallback(args.successCallback, ctx);
     });
+}
+
+export function isTeamsHostAvailable() {
+    let isHostAvailable = window.parent !== window.self && microsoftTeams !== undefined;
+    console.log("isTeamsHostAvailable", isHostAvailable);
+    return isHostAvailable;
+}
+
+
+
+export function appInitialization_notifyAppLoaded()
+{
+    microsoftTeams.appInitialization.notifyAppLoaded();
+}
+
+export function appInitialization_notifyFailure(failedRequest)
+{
+    microsoftTeams.appInitialization.notifyFailure(failedRequest);
+}
+
+export function appInitialization_notifySuccess()
+{
+    microsoftTeams.appInitialization.notifySuccess();
 }
 
 

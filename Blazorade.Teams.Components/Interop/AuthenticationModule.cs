@@ -8,16 +8,9 @@ using System.Threading.Tasks;
 
 namespace Blazorade.Teams.Components.Interop
 {
-    public class AuthenticationModule : InteropModuleBase
+    internal class AuthenticationModule : InteropModuleBase
     {
         public AuthenticationModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
-
-
-        internal async Task GetTokenAsync(Context context, Func<AuthenticationResult, Task> successCallback, Func<string, Task> failureCallback)
-        {
-            var module = await this.GetBlazoradeMsalModuleAsync();
-            await module.InvokeVoidAsync("getTokenSilent", new MsalConfig(this.ApplicationSettings), context, CallbackDefinition.Create(successCallback), CallbackDefinition.Create(failureCallback));
-        }
 
     }
 }

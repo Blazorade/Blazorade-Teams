@@ -19,6 +19,16 @@ namespace Blazorade.Teams.Components.Interop
             };
         }
 
+        public static CallbackDefinition Create(Func<Task> method)
+        {
+            return Create((Delegate)method);
+        }
+
+        public static CallbackDefinition Create<T>(Func<T, Task> method)
+        {
+            return Create((Delegate)method);
+        }
+
         public DotNetObjectReference<object> Target { get; set; }
 
         public string MethodName { get; set; }

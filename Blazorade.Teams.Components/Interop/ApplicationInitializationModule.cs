@@ -16,14 +16,20 @@ namespace Blazorade.Teams.Components.Interop
 
 
 
-        public async Task NotifyAppLoadedAsync()
+        public Task NotifyAppLoadedAsync()
         {
-            await this.JSRuntime.InvokeVoidAsync("microsoftTeams.appInitialization.notifyAppLoaded");
+            return this.GetBlazoradeTeamsJSModuleAsync().ContinueWith(module =>
+                {
+                    module.Result.InvokeVoidAsync("appInitialization_notifyAppLoaded");
+                });
         }
 
-        public async Task NotifyFailureAsync(FailedRequest failedRequest = null)
+        public Task NotifyFailureAsync(FailedRequest failedRequest = null)
         {
-            await this.JSRuntime.InvokeVoidAsync("microsoftTeams.appInitialization.notifyFailure", failedRequest ?? new FailedRequest());
+            return this.GetBlazoradeTeamsJSModuleAsync().ContinueWith(module =>
+                {
+                    module.Result.InvokeVoidAsync("appInitialization_notifyFailure", failedRequest ?? new FailedRequest());
+                });
         }
 
         public async Task NotifyFailureAsync(string message, FailedReason? reason = null)
@@ -37,9 +43,12 @@ namespace Blazorade.Teams.Components.Interop
             await this.NotifyFailureAsync(failedRequest);
         }
 
-        public async Task NotifySuccessAsync()
+        public Task NotifySuccessAsync()
         {
-            await this.JSRuntime.InvokeVoidAsync("microsoftTeams.appInitialization.notifySuccess");
+            return this.GetBlazoradeTeamsJSModuleAsync().ContinueWith(module =>
+                {
+                    module.Result.InvokeVoidAsync("appInitialization_notifySuccess");
+                });
         }
     }
 }

@@ -24,6 +24,9 @@ namespace Blazorade.Teams.Components
         [Parameter]
         public RenderFragment<ApplicationContext> ApplicationTemplate { get; set; }
 
+        [Parameter]
+        public RenderFragment HostNotAvailableTemplate { get; set; }
+
         private ApplicationContext _ApplicationContext;
         public ApplicationContext ApplicationContext
         {
@@ -38,44 +41,55 @@ namespace Blazorade.Teams.Components
 
         protected bool ShowApplicationTemplate { get; set; }
 
-        [JSInvokable]
-        public async Task OnAppInitializedAsync()
-        {
-            await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
-            await this.TeamsInterop.GetContextAsync(this.OnGotContextAsync);
-        }
+        protected bool ShowHostNotAvailableTemplate { get; set; }
 
-        [JSInvokable]
-        public async Task OnAuthResultSuccessAsync(AuthenticationResult authResult)
-        {
-            this.ApplicationContext.AuthResult = authResult;
-            await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
 
-            this.ShowApplicationTemplate = true;
-            this.StateHasChanged();
-        }
 
-        [JSInvokable]
-        public async Task OnAuthResultFailureAsync(string reason)
+        protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            this.ApplicationContext.AuthResult = new AuthenticationResult
+            await base.OnAfterRenderAsync(firstRender);
+
+            
+            if(firstRender)
             {
-                IsFailed = true,
-                FailureReason = reason
-            };
-
-            await this.TeamsInterop.AppInitialization.NotifyFailureAsync(reason, FailedReason.AuthFailed);
+                var isHostAvailable = await this.TeamsInterop.IsTeamsHostAvailableAsync();
+                if(isHostAvailable)
+                {
+                    try
+                    {
+                        await this.InitializeAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
+                    }
+                }
+                else
+                {
+                    this.ShowHostNotAvailableTemplate = true;
+                    this.StateHasChanged();
+                }
+            }
         }
 
-        [JSInvokable]
-        public async Task OnGotContextAsync(Context context)
+        private async Task InitializeAsync()
         {
+            await this.TeamsInterop.InitializeAsync();
+
+            await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
+            var context = await this.TeamsInterop.GetContextAsync();
+
             this.ApplicationContext.Context = context;
             this.StateHasChanged();
 
-            if(this.RequireAuthentication)
+            if (this.RequireAuthentication)
             {
-                await this.TeamsInterop.Authentication.GetTokenAsync(context, this.OnAuthResultSuccessAsync, this.OnAuthResultFailureAsync);
+                var authResult = await this.TeamsInterop.GetTokenAsync(context);
+                this.ApplicationContext.AuthResult = authResult;
+                await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
+
+                this.ShowApplicationTemplate = true;
+                this.StateHasChanged();
             }
             else
             {
@@ -84,25 +98,5 @@ namespace Blazorade.Teams.Components
                 this.StateHasChanged();
             }
         }
-
-
-
-        protected async override Task OnAfterRenderAsync(bool firstRender)
-        {
-            await base.OnAfterRenderAsync(firstRender);
-
-            if(firstRender)
-            {
-                try
-                {
-                    await this.TeamsInterop.InitializeAsync(this.OnAppInitializedAsync);
-                }
-                catch (Exception ex)
-                {
-                    await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
-                }
-            }
-        }
-
     }
 }

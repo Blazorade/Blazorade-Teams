@@ -1,18 +1,17 @@
 ﻿import { invokeCallback } from "./blazoradeTeams.js";
 
-export function getTokenSilent(config, context, successCallback, failureCallback) {
-    config.auth.redirectUri = `${window.location.protocol}//${window.location.host}/`;
-    config.cache = {
+export function getTokenSilent(args, context) {
+    args.args.config.auth.redirectUri = `${window.location.protocol}//${window.location.host}/`;
+    args.args.config.cache = {
         cacheLocation: "localStorage"
     };
     
-    console.log("getTokenSilent", config, context);
+    console.log("getTokenSilent", args);
 
-
-    let msalClient = new msal.PublicClientApplication(config);
+    let msalClient = new msal.PublicClientApplication(args.args.config);
     console.log("msalClient", msalClient);
 
-    let homeId = context.userObjectId + "." + context.tid;
+    let homeId = args.args.context.userObjectId + "." + args.args.context.tid;
     let account = msalClient.getAccountByHomeId(homeId);
     console.log("account", account);
 
@@ -23,16 +22,16 @@ export function getTokenSilent(config, context, successCallback, failureCallback
         })
         .then(result => {
             console.log("success", result);
-            invokeCallback(successCallback, result);
+            invokeCallback(args.successCallback, result);
         })
         .catch(err => {
             console.warn("failed getting token silently", "Falling back to popup", err);
-            getTokenWithPopup(msalClient, context.loginHint, successCallback, failureCallback);
+            getTokenWithPopup(args.successCallback, args.failureCallback, msalClient, args.args.context.loginHint);
         })
         ;
 }
 
-function getTokenWithPopup(msalClient, loginHint, successCallback, failureCallback) {
+function getTokenWithPopup(successCallback, failureCallback, msalClient, loginHint) {
     console.log("getTokenWithPopup", msalClient, loginHint);
 
     try {

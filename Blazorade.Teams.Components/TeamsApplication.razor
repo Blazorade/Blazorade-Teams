@@ -1,9 +1,13 @@
 ﻿@inherits BlazoradeComponentBase
 @inject BlazoradeTeamsInteropModule TeamsInterop
 
-@if (this.ShowApplicationTemplate)
+@if (this.ShowApplicationTemplate && null != this.ApplicationTemplate)
 {
     @this.ApplicationTemplate(this.ApplicationContext)
+}
+else if (this.ShowHostNotAvailableTemplate && null != this.HostNotAvailableTemplate)
+{
+    @this.HostNotAvailableTemplate
 }
 else
 {
