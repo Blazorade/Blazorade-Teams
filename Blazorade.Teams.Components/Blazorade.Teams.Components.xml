@@ -30,13 +30,10 @@
             The root module for facilitating communications with the Teams JavaScript SDK.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Components.Interop.ApplicationInitializationModule)">
+        <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Components.Interop.ApplicationInitializationModule,Blazorade.Teams.Components.Interop.SettingsModule)">
             <summary>
             Creates a new instance of the module class.
             </summary>
-            <param name="appOptions">The application options configured on the app.</param>
-            <param name="jsRuntime"></param>
-            <param name="appInitModule"></param>
             <remarks>
             This class should not be initialized in code. It will be created automatically through Dependency Injection
             and provided through the <see cref="P:Blazorade.Teams.Components.TeamsApplication.TeamsInterop"/> property.
@@ -45,6 +42,11 @@
         <member name="P:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.AppInitialization">
             <summary>
             A module that represents the <c>appInitialization</c> module in the Teams SDK.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.Settings">
+            <summary>
+            A module that represents the <c>settings</c> module in the Teams SDK.
             </summary>
         </member>
         <member name="M:Blazorade.Teams.Components.Interop.BlazoradeTeamsInteropModule.GetContextAsync">
@@ -334,6 +336,50 @@
             </list>
             </remarks>
         </member>
+        <member name="T:Blazorade.Teams.Components.Interop.Settings">
+            <summary>
+            Settings for configuring tab applications with.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Settings.ContentUrl">
+            <summary>
+            Sets the URL to use for the content of this instance.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Settings.EntityId">
+            <summary>
+            The developer-defined unique ID for the entity to which this content points.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Settings.RemoveUrl">
+            <summary>
+            Sets the URL for the removal configuration experience.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Settings.SuggestedDisplayName">
+            <summary>
+            A suggested display name for the new content. In the settings for an existing instance being updated, this call has no effect.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.Interop.Settings.WebsiteUrl">
+            <summary>
+            Sets the URL to use for the external link to view the underlying resource in a browser.
+            </summary>
+        </member>
+        <member name="T:Blazorade.Teams.Components.Interop.SettingsModule">
+            <summary>
+            Represents the settings module in the Teams SDK.
+            </summary>
+            <remarks>
+            This class must not be created by application in code. It will be provided through the <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationContext"/>
+            context property.
+            </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Components.Interop.SettingsModule.#ctor(Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+            <summary>
+            Creates a new instance.
+            </summary>
+        </member>
         <member name="T:Blazorade.Teams.Components.TeamsApplication">
             <summary>
             The root component for all application pages in your Microsoft Teams tab application.
@@ -395,6 +441,16 @@
             This context is provided as the context to the <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate"/> template.
             </remarks>
         </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.ShowApplicationTemplate">
+            <summary>
+            Determines whether to show the <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate"/> template.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.ShowHostNotAvailableTemplate">
+            <summary>
+            Determines whether to show the <see cref="P:Blazorade.Teams.Components.TeamsApplication.HostNotAvailableTemplate"/> template.
+            </summary>
+        </member>
         <member name="M:Blazorade.Teams.Components.TeamsApplication.OnAfterRenderAsync(System.Boolean)">
             <summary>
             Controls the rendering of the component.
@@ -407,6 +463,32 @@
             <remarks>
             This should not be called if the Teams host context is not available.
             </remarks>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods">
+            <summary>
+            Extension methods for working with Dependency Injection in Blazorade Teams.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the necessary services required by Blazorade Teams.
+            </summary>
+            <remarks>
+            If you require that your application users are properly authenticated, then you need to use the
+            other overloaded methods to specify the needed information.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions})">
+            <summary>
+            Adds services needed by Blazorade Teams and allows you to specify the application configuration required
+            in order to perform user authentication.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Blazorade.Teams.Components.Configuration.AzureAdApplicationOptions})">
+            <summary>
+            Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
+            using other services configured in the application.
+            </summary>
         </member>
     </members>
 </doc>

@@ -111,6 +111,9 @@ namespace Blazorade.Teams.Components
                 var isHostAvailable = await this.TeamsInterop.IsTeamsHostAvailableAsync();
                 if(isHostAvailable)
                 {
+                    // Now we know that the app is properly loaded, so we can set the interop module
+                    // on the application context for easy access.
+                    this.ApplicationContext.TeamsInterop = this.TeamsInterop;
                     try
                     {
                         await this.InitializeAsync();

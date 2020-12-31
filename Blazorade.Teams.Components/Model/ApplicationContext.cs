@@ -14,5 +14,7 @@ namespace Blazorade.Teams.Components.Model
 
         public AuthenticationResult AuthResult { get; internal set; }
 
+        public BlazoradeTeamsInteropModule TeamsInterop { get; internal set; }
+
     }
 }

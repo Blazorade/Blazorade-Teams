@@ -23,19 +23,23 @@ export function isTeamsHostAvailable() {
 
 
 
-export function appInitialization_notifyAppLoaded()
-{
+export function appInitialization_notifyAppLoaded() {
     microsoftTeams.appInitialization.notifyAppLoaded();
 }
 
-export function appInitialization_notifyFailure(failedRequest)
-{
+export function appInitialization_notifyFailure(failedRequest) {
     microsoftTeams.appInitialization.notifyFailure(failedRequest);
 }
 
-export function appInitialization_notifySuccess()
-{
+export function appInitialization_notifySuccess() {
     microsoftTeams.appInitialization.notifySuccess();
+}
+
+
+
+export function settings_setValidityState(validityState) {
+    console.log("settings.setValidityState", validityState);
+    microsoftTeams.settings.setValidityState(validityState);
 }
 
 
