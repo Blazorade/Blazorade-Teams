@@ -1,3 +1,16 @@
 ﻿@page "/"
 
-<h1>Teams Tab App</h1>
+<TeamsApplication>
+    <ApplicationTemplate Context="ctx">
+        <h1>Teams Tab App</h1>
+        <ul>
+            <li>Login Hint: @ctx.Context.LoginHint</li>
+        </ul>
+    </ApplicationTemplate>
+    <HostNotAvailableTemplate>
+        <p>
+            Seems like you're not running this application in a Microsoft Teams context.
+        </p>
+    </HostNotAvailableTemplate>
+</TeamsApplication>
+

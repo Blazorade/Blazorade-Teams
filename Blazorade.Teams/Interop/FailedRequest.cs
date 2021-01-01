@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blazorade.Teams.Components.Interop
+namespace Blazorade.Teams.Interop
 {
     public class FailedRequest
     {

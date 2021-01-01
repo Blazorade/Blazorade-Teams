@@ -1,5 +1,5 @@
-﻿using Blazorade.Teams.Components.Interop;
-using Blazorade.Teams.Components.Model;
+﻿using Blazorade.Teams.Interop;
+using Blazorade.Teams.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;

@@ -1,4 +1,4 @@
-﻿using Blazorade.Teams.Components.Configuration;
+﻿using Blazorade.Teams.Configuration;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blazorade.Teams.Components.Interop
+namespace Blazorade.Teams.Interop
 {
     public abstract class InteropModuleBase
     {
@@ -29,7 +29,7 @@ namespace Blazorade.Teams.Components.Interop
             return this.GetTeamsSdkModuleAsync()
                 .ContinueWith(state =>
                 {
-                    return (_BlazoradeTeamsJSModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeTeams.js").AsTask()).Result;
+                    return (_BlazoradeTeamsJSModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeTeams.js").AsTask()).Result;
                 });
         }
 
@@ -39,7 +39,7 @@ namespace Blazorade.Teams.Components.Interop
             return this.GetMsalModuleAsync()
                 .ContinueWith(state =>
                 {
-                    return (_BlazoradeMsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams.Components/js/blazoradeMsal.js").AsTask()).Result;
+                    return (_BlazoradeMsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeMsal.js").AsTask()).Result;
                 });
         }
 

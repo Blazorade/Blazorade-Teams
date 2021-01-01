@@ -1,3 +1,4 @@
+using Blazorade.Teams.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -14,19 +15,20 @@ namespace TeamsTabAppServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services
+                .AddRazorPages().Services
+                .AddServerSideBlazor().Services
+                .AddBlazoradeTeams((p, c) =>
+                {
+                    var root = p.GetService<IConfiguration>();
+                    var config = root.GetSection("teamsApp");
+                    c.ClientId = config.GetValue<string>("clientId");
+                    c.TenantId = config.GetValue<string>("tenantId");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

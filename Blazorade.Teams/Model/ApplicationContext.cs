@@ -1,11 +1,11 @@
-﻿using Blazorade.Teams.Components.Interop;
+﻿using Blazorade.Teams.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blazorade.Teams.Components.Model
+namespace Blazorade.Teams.Model
 {
     public class ApplicationContext
     {

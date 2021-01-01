@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Blazorade.Teams.Components.Interop
+namespace Blazorade.Teams.Interop
 {
     internal class CallbackProxy<TSuccess, TFailure>
     {

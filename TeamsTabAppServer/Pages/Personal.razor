@@ -1,0 +1,15 @@
+﻿@page "/personal"
+
+<TeamsApplication RequireAuthentication="true">
+    <ApplicationTemplate Context="ctx">
+        <h2>Personal Tab for @ctx.AuthResult.IdTokenClaims["name"]</h2>
+    </ApplicationTemplate>
+    <HostNotAvailableTemplate>
+        <p>
+            This application is designed to be run inside of Microsoft Teams.
+        </p>
+    </HostNotAvailableTemplate>
+    <ChildContent>
+        Loading...
+    </ChildContent>
+</TeamsApplication>

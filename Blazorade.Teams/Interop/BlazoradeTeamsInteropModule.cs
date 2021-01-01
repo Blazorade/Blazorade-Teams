@@ -1,4 +1,4 @@
-﻿using Blazorade.Teams.Components.Configuration;
+﻿using Blazorade.Teams.Configuration;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Blazorade.Teams.Components.Interop
+namespace Blazorade.Teams.Interop
 {
     /// <summary>
     /// The root module for facilitating communications with the Teams JavaScript SDK.

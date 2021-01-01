@@ -1,25 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Version>0.1.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>Blazorade.Teams.Components.xml</DocumentationFile>
+    <DocumentationFile>Blazorade.Teams.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>Blazorade.Teams.Components.xml</DocumentationFile>
+    <DocumentationFile>Blazorade.Teams.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Blazorade.Teams.Components.xml" />
+    <None Remove="Blazorade.Teams.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Blazorade.Teams.Components.xml" />
+    <EmbeddedResource Include="Blazorade.Teams.xml" />
   </ItemGroup>
 
+  
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
@@ -29,4 +31,5 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
   </ItemGroup>
+
 </Project>

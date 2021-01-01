@@ -1,5 +1,5 @@
-﻿using Blazorade.Teams.Components.Configuration;
-using Blazorade.Teams.Components.Interop;
+﻿using Blazorade.Teams.Configuration;
+using Blazorade.Teams.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
