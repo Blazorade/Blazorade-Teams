@@ -23,6 +23,22 @@ namespace Blazorade.Teams.Interop
         public SettingsModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
 
 
+        public async Task RegisterOnSaveHandlerAsync(Settings settings, Func<Task> successCallback, Func<Task> failureCallback)
+        {
+            var args = new CallbackMethodArgs
+            {
+                Args = new Dictionary<string, object>()
+                {
+                    {  "settings", settings }
+                },
+                SuccessCallback = CallbackDefinition.Create(successCallback),
+                FailureCallback = CallbackDefinition.Create(failureCallback)
+            };
+
+            var module = await this.GetBlazoradeTeamsJSModuleAsync();
+            await module.InvokeVoidAsync("settings_registerOnSaveHandler", args);
+        }
+
         public async Task SetValidityStateAsync(bool validityState)
         {
             var module = await this.GetBlazoradeTeamsJSModuleAsync();

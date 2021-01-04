@@ -42,6 +42,16 @@ export function settings_setValidityState(validityState) {
     microsoftTeams.settings.setValidityState(validityState);
 }
 
+export function settings_registerOnSaveHandler(args) {
+    console.log("settings.registerOnSaveHandler", args);
+    microsoftTeams.settings.registerOnSaveHandler((evt) => {
+
+
+        evt.notifyFailure("Just test failing...");
+        invokeCallback(args.failureCallback);
+    });
+}
+
 
 
 export function invokeCallback(callback, ...args) {
