@@ -1,23 +1,18 @@
 ﻿
 export function initialize(args) {
-    console.log("initializing", args);
     microsoftTeams.initialize(() => {
-        console.log("initialized");
         invokeCallback(args.successCallback, null);
     });
 }
 
 export function getContext(args) {
-    console.log("getContext", args);
     microsoftTeams.getContext((ctx) => {
-        console.log("gotContext", ctx);
         invokeCallback(args.successCallback, ctx);
     });
 }
 
 export function isTeamsHostAvailable() {
     let isHostAvailable = window.parent !== window.self && microsoftTeams !== undefined;
-    console.log("isTeamsHostAvailable", isHostAvailable);
     return isHostAvailable;
 }
 
@@ -28,6 +23,7 @@ export function appInitialization_notifyAppLoaded() {
 }
 
 export function appInitialization_notifyFailure(failedRequest) {
+    consol.error("appInitialization.notifyFailure", failedRequest);
     microsoftTeams.appInitialization.notifyFailure(failedRequest);
 }
 
@@ -38,24 +34,42 @@ export function appInitialization_notifySuccess() {
 
 
 export function settings_setValidityState(validityState) {
-    console.log("settings.setValidityState", validityState);
     microsoftTeams.settings.setValidityState(validityState);
 }
 
 export function settings_registerOnSaveHandler(args) {
-    console.log("settings.registerOnSaveHandler", args);
     microsoftTeams.settings.registerOnSaveHandler((evt) => {
+        let saveSettings = () => {
+            microsoftTeams.settings.setSettings(args.args.settings);
+            invokeCallback(args.successCallback);
+            evt.notifySuccess();
+        };
 
-
-        evt.notifyFailure("Just test failing...");
-        invokeCallback(args.failureCallback);
+        try {
+            if (isCallbackValid(args.args.savingCallback)) {
+                args.args.savingCallback.target.invokeMethodAsync(args.args.savingCallback.methodName, args.args.savingCallbackData)
+                    .then(() => {
+                        saveSettings();
+                    });
+            }
+            else {
+                saveSettings();
+            }
+        }
+        catch (err) {
+            console.error("saving settings", err, args);
+            evt.notifyFailure(err);
+            invokeCallback(args.failureCallback);
+        }
     });
 }
 
 
+export function isCallbackValid(callback) {
+    return callback && callback.target && callback.methodName && true;
+}
 
 export function invokeCallback(callback, ...args) {
-    console.log("invokeCallback", callback, args);
     if (callback && callback.target && callback.methodName) {
         callback.target.invokeMethodAsync(callback.methodName, ...args);
     }

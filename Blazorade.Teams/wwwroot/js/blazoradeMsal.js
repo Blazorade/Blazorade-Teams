@@ -6,14 +6,10 @@ export function getTokenSilent(args, context) {
         cacheLocation: "localStorage"
     };
     
-    console.log("getTokenSilent", args);
-
     let msalClient = new msal.PublicClientApplication(args.args.config);
-    console.log("msalClient", msalClient);
 
     let homeId = args.args.context.userObjectId + "." + args.args.context.tid;
     let account = msalClient.getAccountByHomeId(homeId);
-    console.log("account", account);
 
     msalClient
         .acquireTokenSilent({
@@ -21,7 +17,6 @@ export function getTokenSilent(args, context) {
             account: account
         })
         .then(result => {
-            console.log("success", result);
             invokeCallback(args.successCallback, result);
         })
         .catch(err => {
@@ -41,7 +36,6 @@ function getTokenWithPopup(successCallback, failureCallback, msalClient, loginHi
                 loginHint
             })
             .then(result => {
-                console.log("success", result);
                 invokeCallback(successCallback, result);
             })
             .catch(err => {

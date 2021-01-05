@@ -26,6 +26,7 @@ namespace Blazorade.Teams.Interop
             return Task.CompletedTask;
         }
 
+        [JSInvokable]
         public Task FailureCallbackAsync(TFailure result = default)
         {
             this.Promise.TrySetException(new FailureCallbackException(result));

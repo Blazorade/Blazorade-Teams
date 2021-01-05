@@ -27,6 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<BlazoradeTeamsInteropModule>()
                 .AddScoped<ApplicationInitializationModule>()
                 .AddScoped<SettingsModule>()
+                .AddScoped<AuthenticationModule>()
                 ;
         }
 

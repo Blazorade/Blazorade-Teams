@@ -9,7 +9,7 @@ else if (this.ShowHostNotAvailableTemplate && null != this.HostNotAvailableTempl
 {
     @this.HostNotAvailableTemplate
 }
-else
+else if(null != this.LoadingTemplate)
 {
-    @this.ChildContent
+    @this.LoadingTemplate(this.ApplicationContext)
 }

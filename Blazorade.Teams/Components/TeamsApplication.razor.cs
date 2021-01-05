@@ -68,6 +68,15 @@ namespace Blazorade.Teams.Components
         [Parameter]
         public RenderFragment HostNotAvailableTemplate { get; set; }
 
+        /// <summary>
+        /// The template that is displayed while loading the application.
+        /// </summary>
+        /// <remarks>
+        /// Nothing is rendered while loading if this template is not defined.
+        /// </remarks>
+        [Parameter]
+        public RenderFragment<ApplicationContext> LoadingTemplate { get; set; }
+
         private ApplicationContext _ApplicationContext = new ApplicationContext { };
         /// <summary>
         /// The application context.
@@ -166,7 +175,7 @@ namespace Blazorade.Teams.Components
             if (this.RequireAuthentication)
             {
                 //-----------------------------------------------------------------------------------
-                var authResult = await this.TeamsInterop.GetTokenAsync(context);
+                var authResult = await this.TeamsInterop.Authentication.GetAuthenticationResultAsync(context);
                 this.ApplicationContext.AuthResult = authResult;
                 await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
 

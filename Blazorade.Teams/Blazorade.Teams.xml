@@ -57,6 +57,14 @@
             This template is typically rendered when the application is not loaded by Teams.
             </remarks>
         </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.LoadingTemplate">
+            <summary>
+            The template that is displayed while loading the application.
+            </summary>
+            <remarks>
+            Nothing is rendered while loading if this template is not defined.
+            </remarks>
+        </member>
         <member name="P:Blazorade.Teams.Components.TeamsApplication.ApplicationContext">
             <summary>
             The application context.
@@ -109,19 +117,35 @@
             application specified in <see cref="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.ClientId"/> is registered in.
             </summary>
         </member>
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.GetAuthenticationResultAsync(Blazorade.Teams.Interop.Context)">
+            <summary>
+            Uses MSAL.js to authenticate the user specified in <paramref name="context"/> and returns the result
+            of that authentication.
+            </summary>
+            <param name="context">The Teams context to use when resolving the token.</param>
+            <remarks>
+            The method attempts to perform the authentication silently, but will fall back to using a popup dialog
+            if the authentication did not succeed.
+            </remarks>
+        </member>
         <member name="T:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule">
             <summary>
             The root module for facilitating communications with the Teams JavaScript SDK.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Interop.ApplicationInitializationModule,Blazorade.Teams.Interop.SettingsModule)">
+        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Interop.ApplicationInitializationModule,Blazorade.Teams.Interop.SettingsModule,Blazorade.Teams.Interop.AuthenticationModule)">
             <summary>
             Creates a new instance of the module class.
             </summary>
             <remarks>
             This class should not be initialized in code. It will be created automatically through Dependency Injection
-            and provided through the <see cref="!:TeamsApplication.TeamsInterop"/> property.
+            and provided through the <see cref="P:Blazorade.Teams.Components.TeamsApplication.TeamsInterop"/> property.
             </remarks>
+        </member>
+        <member name="P:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.Authentication">
+            <summary>
+            Returns a module that is used for authentication.
+            </summary>
         </member>
         <member name="P:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.AppInitialization">
             <summary>
@@ -138,7 +162,7 @@
             Returns the context information loaded from Teams.
             </summary>
             <remarks>
-            This method is called for you when you use the <see cref="!:TeamsApplication"/> component.
+            This method is called for you when you use the <see cref="T:Blazorade.Teams.Components.TeamsApplication"/> component.
             </remarks>
         </member>
         <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.InitializeAsync">
@@ -146,7 +170,7 @@
             Initializes your application with Teams.
             </summary>
             <remarks>
-            This method is invoked for you when you use the <see cref="!:TeamsApplication"/> component.
+            This method is invoked for you when you use the <see cref="T:Blazorade.Teams.Components.TeamsApplication"/> component.
             </remarks>
         </member>
         <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.IsTeamsHostAvailableAsync">
@@ -159,21 +183,10 @@
             will also very likely fail.
             </para>
             <para>
-            You don't have to worry about this when using the <see cref="!:TeamsApplication"/> component as the
+            You don't have to worry about this when using the <see cref="T:Blazorade.Teams.Components.TeamsApplication"/> component as the
             root component on your pages, and putting your application content in the
-            <see cref="!:TeamsApplication.ApplicationTemplate"/> template.
+            <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate"/> template.
             </para>
-            </remarks>
-        </member>
-        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.GetTokenAsync(Blazorade.Teams.Interop.Context)">
-            <summary>
-            Uses MSAL.js to get an access token for the logged in user.
-            </summary>
-            <param name="context">The Teams context to use when resolving the token.</param>
-            <remarks>
-            The access token returned by this method defines the scopes that have been defined on your Azure AD
-            application, which you configure in your application's startup class by using the
-            <see cref="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/> methods.
             </remarks>
         </member>
         <member name="P:Blazorade.Teams.Interop.Context.AppIconPosition">
@@ -455,14 +468,34 @@
             Represents the settings module in the Teams SDK.
             </summary>
             <remarks>
-            This class must not be created by application in code. It will be provided through the <see cref="!:TeamsApplication.ApplicationContext"/>
+            <para>
+            This class must not be created by application in code. It will be provided through the <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationContext"/>
             context property.
+            </para>
             </remarks>
         </member>
         <member name="M:Blazorade.Teams.Interop.SettingsModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
             <summary>
             Creates a new instance.
             </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.SettingsModule.RegisterOnSaveHandlerAsync(Blazorade.Teams.Interop.Settings,System.Func{System.Collections.Generic.Dictionary{System.String,System.Object},System.Threading.Tasks.Task},System.Collections.Generic.Dictionary{System.String,System.Object},System.Func{System.Threading.Tasks.Task},System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Registers 
+            </summary>
+            <param name="settings"></param>
+            <param name="savingCallback"></param>
+            <param name="savingCallbackData"></param>
+            <param name="successCallback"></param>
+            <param name="failureCallback"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.SettingsModule.SetValidityStateAsync(System.Boolean)">
+            <summary>
+            Sets the validity state for the settings. The initial value is <c>false</c>, so the user
+            cannot save the settings until this is called with <c>true</c>.
+            </summary>
+            <param name="validityState">Set to <c>true</c> if settings are valid and saving them is allowed.</param>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods">
             <summary>

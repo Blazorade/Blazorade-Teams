@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Configuration;
+﻿using Blazorade.Teams.Components;
+using Blazorade.Teams.Configuration;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,17 @@ namespace Blazorade.Teams.Interop
         /// This class should not be initialized in code. It will be created automatically through Dependency Injection
         /// and provided through the <see cref="TeamsApplication.TeamsInterop"/> property.
         /// </remarks>
-        public BlazoradeTeamsInteropModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule) : base(appOptions, jsRuntime)
+        public BlazoradeTeamsInteropModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule, AuthenticationModule authModule) : base(appOptions, jsRuntime)
         {
+            this.Authentication = authModule ?? throw new ArgumentNullException(nameof(authModule));
             this.AppInitialization = appInitModule ?? throw new ArgumentNullException(nameof(appInitModule));
             this.Settings = settingsModule ?? throw new ArgumentNullException(nameof(settingsModule));
         }
+
+        /// <summary>
+        /// Returns a module that is used for authentication.
+        /// </summary>
+        public AuthenticationModule Authentication { get; protected set; }
 
         /// <summary>
         /// A module that represents the <c>appInitialization</c> module in the Teams SDK.
@@ -83,27 +90,5 @@ namespace Blazorade.Teams.Interop
             return await module.InvokeAsync<bool>("isTeamsHostAvailable");
         }
 
-        /// <summary>
-        /// Uses MSAL.js to get an access token for the logged in user.
-        /// </summary>
-        /// <param name="context">The Teams context to use when resolving the token.</param>
-        /// <remarks>
-        /// The access token returned by this method defines the scopes that have been defined on your Azure AD
-        /// application, which you configure in your application's startup class by using the
-        /// <see cref="BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams"/> methods.
-        /// </remarks>
-        public async Task<AuthenticationResult> GetTokenAsync(Context context)
-        {
-            var module = await this.GetBlazoradeMsalModuleAsync();
-            return await new CallbackProxy<AuthenticationResult>(await this.GetBlazoradeMsalModuleAsync())
-                .GetResultAsync(
-                    "getTokenSilent",
-                    args: new Dictionary<string, object>
-                    {
-                        { "context", context },
-                        { "config", new MsalConfig(this.ApplicationSettings) }
-                    }
-                );
-        }
     }
 }
