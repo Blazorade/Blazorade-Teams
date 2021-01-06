@@ -2,7 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>0.1.1</Version>
+    <Version>0.9.1-preview</Version>
+    <Authors>Mika Berglund</Authors>
+    <Company>Blazorade</Company>
+    <Product>Blazorade Teams</Product>
+    <Description>Blazorade Teams is a component library designed to be used when creating Tab applications for Microsoft Teams as Blazor applications. It can be used in both Blazor Server and Blazor WebAssembly applications.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Blazorade/Blazorade-Teams/wiki</PackageProjectUrl>
+    <PackageIcon>Blazorade-Icon-128.png</PackageIcon>
+    <RepositoryUrl>https://github.com/Blazorade/Blazorade-Teams</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>Blazor, Teams, Microsoft Teams</PackageTags>
+    <PackageReleaseNotes>This is a preview release.</PackageReleaseNotes>
+    <Copyright>Copyright Blazorade, Mika Berglund</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -15,6 +28,10 @@
 
   <ItemGroup>
     <None Remove="Blazorade.Teams.xml" />
+    <None Include="wwwroot\Blazorade-Icon-128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
