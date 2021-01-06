@@ -479,16 +479,30 @@
             Creates a new instance.
             </summary>
         </member>
+        <member name="M:Blazorade.Teams.Interop.SettingsModule.GetSettingsAsync">
+            <summary>
+            Gets the settings for the current instance.
+            </summary>
+        </member>
         <member name="M:Blazorade.Teams.Interop.SettingsModule.RegisterOnSaveHandlerAsync(Blazorade.Teams.Interop.Settings,System.Func{System.Collections.Generic.Dictionary{System.String,System.Object},System.Threading.Tasks.Task},System.Collections.Generic.Dictionary{System.String,System.Object},System.Func{System.Threading.Tasks.Task},System.Func{System.Threading.Tasks.Task})">
             <summary>
-            Registers 
+            Registers a handler that Teams will call when the user clicks the Save button on the tab configuration dialog.
             </summary>
-            <param name="settings"></param>
-            <param name="savingCallback"></param>
-            <param name="savingCallbackData"></param>
-            <param name="successCallback"></param>
-            <param name="failureCallback"></param>
-            <returns></returns>
+            <param name="settings">The settings to save when the handler is called.</param>
+            <param name="savingCallback">
+            <para>
+            A callback that will be called before saving the settings with Teams.
+            </para>
+            <para>
+            This allows you to perform tasks while the settings dialog is showing before the settings are saved
+            with Teams and the dialog is closed. This is useful if you for instance want to perform some tasks
+            to initialize your tab application.
+            </para>
+            
+            </param>
+            <param name="savingCallbackData">The data that will be passed to the <paramref name="savingCallback"/>.</param>
+            <param name="successCallback">The callback that will be called when the settings have been successfully saved.</param>
+            <param name="failureCallback">The callback that will be called when there was an error saving the settings.</param>
         </member>
         <member name="M:Blazorade.Teams.Interop.SettingsModule.SetValidityStateAsync(System.Boolean)">
             <summary>

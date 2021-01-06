@@ -33,6 +33,12 @@ export function appInitialization_notifySuccess() {
 
 
 
+export function settings_getSettings(args) {
+    microsoftTeams.settings.getSettings((settings) => {
+        invokeCallback(args.successCallback, settings);
+    });
+}
+
 export function settings_setValidityState(validityState) {
     microsoftTeams.settings.setValidityState(validityState);
 }

@@ -27,14 +27,32 @@ namespace Blazorade.Teams.Interop
 
 
         /// <summary>
-        /// Registers 
+        /// Gets the settings for the current instance.
         /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="savingCallback"></param>
-        /// <param name="savingCallbackData"></param>
-        /// <param name="successCallback"></param>
-        /// <param name="failureCallback"></param>
-        /// <returns></returns>
+        public async Task<Settings> GetSettingsAsync()
+        {
+            CallbackProxy<Settings> proxy = new CallbackProxy<Settings>(await this.GetBlazoradeTeamsJSModuleAsync());
+            return await proxy.GetResultAsync("settings_getSettings");
+        }
+
+        /// <summary>
+        /// Registers a handler that Teams will call when the user clicks the Save button on the tab configuration dialog.
+        /// </summary>
+        /// <param name="settings">The settings to save when the handler is called.</param>
+        /// <param name="savingCallback">
+        /// <para>
+        /// A callback that will be called before saving the settings with Teams.
+        /// </para>
+        /// <para>
+        /// This allows you to perform tasks while the settings dialog is showing before the settings are saved
+        /// with Teams and the dialog is closed. This is useful if you for instance want to perform some tasks
+        /// to initialize your tab application.
+        /// </para>
+        /// 
+        /// </param>
+        /// <param name="savingCallbackData">The data that will be passed to the <paramref name="savingCallback"/>.</param>
+        /// <param name="successCallback">The callback that will be called when the settings have been successfully saved.</param>
+        /// <param name="failureCallback">The callback that will be called when there was an error saving the settings.</param>
         public async Task RegisterOnSaveHandlerAsync(Settings settings, Func<Dictionary<string, object>, Task> savingCallback = null, Dictionary<string, object> savingCallbackData = null, Func<Task> successCallback = null, Func<Task> failureCallback = null)
         {
             var args = new CallbackMethodArgs
