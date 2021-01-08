@@ -469,7 +469,7 @@
             </summary>
             <remarks>
             <para>
-            This class must not be created by application in code. It will be provided through the <see cref="P:Blazorade.Teams.Components.TeamsApplication.ApplicationContext"/>
+            This class must not be created by application in code. It will be provided through the <see cref="T:Blazorade.Teams.Model.ApplicationContext"/>
             context property.
             </para>
             </remarks>

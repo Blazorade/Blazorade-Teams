@@ -2,7 +2,7 @@
 
 <TeamsApplication RequireAuthentication="true">
     <ApplicationTemplate Context="ctx">
-        <h2>Personal Tab for @ctx.AuthResult.IdTokenClaims["name"]</h2>
+        <UserInfoView Context="ctx" />
     </ApplicationTemplate>
     <HostNotAvailableTemplate>
         <p>

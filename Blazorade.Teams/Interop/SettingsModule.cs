@@ -1,5 +1,6 @@
 ﻿using Blazorade.Teams.Components;
 using Blazorade.Teams.Configuration;
+using Blazorade.Teams.Model;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Blazorade.Teams.Interop
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class must not be created by application in code. It will be provided through the <see cref="TeamsApplication.ApplicationContext"/>
+    /// This class must not be created by application in code. It will be provided through the <see cref="ApplicationContext"/>
     /// context property.
     /// </para>
     /// </remarks>
