@@ -51,7 +51,7 @@ namespace Blazorade.Teams.Interop
         /// </para>
         /// 
         /// </param>
-        /// <param name="savingCallbackData">The data that will be passed to the <paramref name="savingCallback"/>.</param>
+        /// <param name="savingCallbackData">The data that will be passed to <paramref name="savingCallback"/>.</param>
         /// <param name="successCallback">The callback that will be called when the settings have been successfully saved.</param>
         /// <param name="failureCallback">The callback that will be called when there was an error saving the settings.</param>
         public async Task RegisterOnSaveHandlerAsync(Settings settings, Func<Dictionary<string, object>, Task> savingCallback = null, Dictionary<string, object> savingCallbackData = null, Func<Task> successCallback = null, Func<Task> failureCallback = null)
@@ -70,6 +70,40 @@ namespace Blazorade.Teams.Interop
 
             var module = await this.GetBlazoradeTeamsJSModuleAsync();
             await module.InvokeVoidAsync("settings_registerOnSaveHandler", args);
+        }
+
+        /// <summary>
+        /// Registers a handler that Teams will call when the user clicks the Remove button on the tab remove dialog.
+        /// </summary>
+        /// <param name="removingCallback">
+        /// <para>
+        /// The callback to call after the Remove button has been clicked and before the tab is actually
+        /// removed from Teams.
+        /// </para>
+        /// <para>
+        /// This allows you to perform tasks while the remove dialog is showing before the tab is removed. This is useful
+        /// for instance if you want to remove data together with the tab.
+        /// </para>
+        /// </param>
+        /// <param name="removingCallbackData">The data that will be passed to <paramref name="removingCallback"/>.</param>
+        /// <param name="successCallback">The callback that will be called when the tab has successfully and completely been removed.</param>
+        /// <param name="failureCallback">The callback that will be called in case an error occurs during removal.</param>
+        /// <returns></returns>
+        public async Task RegisterOnRemoveHandlerAsync(Func<Dictionary<string, object>, Task> removingCallback = null, Dictionary<string, object> removingCallbackData = null, Func<Task> successCallback = null, Func<Task> failureCallback = null)
+        {
+            var args = new CallbackMethodArgs
+            {
+                Args = new Dictionary<string, object>
+                {
+                    { "removingCallback", CallbackDefinition.Create(removingCallback) },
+                    { "removingCallbackData", removingCallbackData }
+                },
+                SuccessCallback = CallbackDefinition.Create(successCallback),
+                FailureCallback =CallbackDefinition.Create(failureCallback)
+            };
+
+            var module = await this.GetBlazoradeTeamsJSModuleAsync();
+            await module.InvokeVoidAsync("settings_registerOnRemoveHandler", args);
         }
 
         /// <summary>

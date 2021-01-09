@@ -70,6 +70,32 @@ export function settings_registerOnSaveHandler(args) {
     });
 }
 
+export function settings_registerOnRemoveHandler(args) {
+    microsoftTeams.settings.registerOnRemoveHandler((evt) => {
+        let doRemove = () => {
+            invokeCallback(args.successCallback);
+            evt.notifySuccess();
+        };
+
+        try {
+            if (isCallbackValid(args.args.removingCallback)) {
+                args.args.removingCallback.target.invokeMethodAsync(args.args.removingCallback.methodName, args.args.removingCallbackData)
+                    .then(() => {
+                        doRemove();
+                    });
+            }
+            else {
+                doRemove();
+            }
+        }
+        catch (err) {
+            console.error("removing settings", err, args);
+            evt.notifyFailure(err);
+            invokeCallback(args.failureCallback);
+        }
+    });
+}
+
 
 export function isCallbackValid(callback) {
     return callback && callback.target && callback.methodName && true;
