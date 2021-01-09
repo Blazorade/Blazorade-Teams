@@ -1,4 +1,9 @@
-﻿
+﻿@code {
+
+    [Parameter]
+    public ApplicationContext Context { get; set; }
+
+}
 <ul>
     <li>Team Name: @this.Context.Context.TeamName</li>
     <li>Team Site URL: @this.Context.Context.TeamSiteUrl</li>

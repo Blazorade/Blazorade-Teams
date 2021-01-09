@@ -1,7 +1,10 @@
-﻿@page "/tabapp"
+﻿@page "/TabApp"
 
 <TeamsApplication RequireAuthentication="true">
     <ApplicationTemplate>
         <TeamsContextView Context="context" />
     </ApplicationTemplate>
+    <LoadingTemplate>
+        Loading. Hang on...
+    </LoadingTemplate>
 </TeamsApplication>
