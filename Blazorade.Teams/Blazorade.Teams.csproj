@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>0.9.1-preview</Version>
+    <Version>0.9.2-preview</Version>
     <Authors>Mika Berglund</Authors>
     <Company>Blazorade</Company>
     <Product>Blazorade Teams</Product>
@@ -15,7 +15,7 @@
     <PackageTags>Blazor, Teams, Microsoft Teams</PackageTags>
     <PackageReleaseNotes>This is a preview release.</PackageReleaseNotes>
     <Copyright>Copyright Blazorade, Mika Berglund</Copyright>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

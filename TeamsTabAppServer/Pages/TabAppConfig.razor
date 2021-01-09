@@ -1,0 +1,53 @@
+﻿@page "/tabappconfig"
+
+@code{
+    ApplicationContext Context;
+
+    [Inject]
+    NavigationManager NavMan { get; set; }
+
+    [JSInvokable]
+    public async Task SavingAsync(Dictionary<string, object> data)
+    {
+        // This method is called by Blazorade Teams when the user has clicked the Save button, but before the
+        // tab application has been saved with Teams.
+        // Here you can do whatever application initialization you need to get the application properly set up.
+
+    }
+
+    private bool isValid;
+    private async Task TabNameChangedAsync(ChangeEventArgs e)
+    {
+        var name = e.Value as string;
+        bool valid = name?.Length > 0;
+        if(valid != isValid)
+        {
+            isValid = valid;
+            await this.Context.TeamsInterop.Settings.SetValidityStateAsync(isValid);
+        }
+
+        if (isValid)
+        {
+            var settings = new Settings
+            {
+                ContentUrl = this.NavMan.ToAbsoluteUri("/TabApp").ToString(),
+                RemoveUrl = this.NavMan.ToAbsoluteUri("/TabAppRemove").ToString(),
+                SuggestedDisplayName = name,
+                EntityId = "com.blazorade.teams.demo.tabapp"
+            };
+            await this.Context.TeamsInterop.Settings.RegisterOnSaveHandlerAsync(settings, this.SavingAsync);
+        }
+    }
+}
+<TeamsApplication RequireAuthentication="true">
+    <ApplicationTemplate>
+        @{ this.Context = context; }
+
+        <p>To be able to save the tab application, you need to set the name for it in the text field below.</p>
+
+        <label for="tab-name">Tab Name</label>
+        <div>
+            <input id="tab-name" type="text" @onchange="this.TabNameChangedAsync" />
+        </div>
+    </ApplicationTemplate>
+</TeamsApplication>
