@@ -1,5 +1,5 @@
 # Blazorade Teams
-A Blazor component library that is designed to be used when building applications for Microsoft Teams.
+A Blazor component library that is designed to be used when building applications for Microsoft Teams. Be sure to also check out the [initial announcement](https://mikaberglund.com/microsoft-teams-app-with-blazor-made-easy-using-blazorade-teams/) for Blazorade Teams.
 
 ## Documentation
 
