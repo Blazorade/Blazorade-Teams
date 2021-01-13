@@ -422,6 +422,34 @@
             this value should be used only as a hint as to the user's role, and never as proof of her role.
             </summary>
         </member>
+        <member name="T:Blazorade.Teams.Interop.InteropModuleBase">
+            <summary>
+            Base class implementation for interop modules.
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.InteropModuleBase.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+            <summary>
+            Creates a new instance of the class.
+            </summary>
+            <param name="appOptions"></param>
+            <param name="jsRuntime"></param>
+        </member>
+        <member name="P:Blazorade.Teams.Interop.InteropModuleBase.JSRuntime">
+            <summary>
+            The JS runtime instance to use for interop calls.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Interop.InteropModuleBase.ApplicationSettings">
+            <summary>
+            The application settings configured on the application.
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.InteropModuleBase.GetBlazoradeTeamsJSModuleAsync">
+            <summary>
+            Gets the JS Module that represents the JavaScript
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:Blazorade.Teams.Interop.LocaleInfo.Platform">
             <summary>
             
