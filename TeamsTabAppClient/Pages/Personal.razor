@@ -1,0 +1,16 @@
+﻿@page "/personal"
+
+<TeamsApplication RequireAuthentication="true">
+    <ApplicationTemplate Context="ctx">
+        <h2>Basic Profile Info for @ctx.AuthResult.IdTokenClaims["name"]</h2>
+        <ProfileViewer Context="ctx" />
+    </ApplicationTemplate>
+    <HostNotAvailableTemplate>
+        <p>
+            Seems like you're not running in Teams.
+        </p>
+    </HostNotAvailableTemplate>
+    <LoadingTemplate>
+        We're loading here!
+    </LoadingTemplate>
+</TeamsApplication>
