@@ -9,38 +9,60 @@ using System.Threading.Tasks;
 
 namespace Blazorade.Teams.Interop
 {
+    /// <summary>
+    /// Base class implementation for interop modules.
+    /// </summary>
     public abstract class InteropModuleBase
     {
 
+        /// <summary>
+        /// Creates a new instance of the class.
+        /// </summary>
+        /// <param name="appOptions"></param>
+        /// <param name="jsRuntime"></param>
         protected InteropModuleBase(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime)
         {
             this.ApplicationSettings = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
             this.JSRuntime = jsRuntime ?? throw new ArgumentNullException(nameof(jsRuntime));
         }
 
+        /// <summary>
+        /// The JS runtime instance to use for interop calls.
+        /// </summary>
         protected IJSRuntime JSRuntime { get; private set; }
 
+        /// <summary>
+        /// The application settings configured on the application.
+        /// </summary>
         protected AzureAdApplicationOptions ApplicationSettings { get; private set; }
 
 
-        private Task<IJSObjectReference> _BlazoradeTeamsJSModule;
-        protected Task<IJSObjectReference> GetBlazoradeTeamsJSModuleAsync()
+        private IJSObjectReference _BlazoradeTeamsJSModule;
+        /// <summary>
+        /// Gets the JS Module that represents the JavaScript
+        /// </summary>
+        /// <returns></returns>
+        protected async Task<IJSObjectReference> GetBlazoradeTeamsJSModuleAsync()
         {
-            return this.GetTeamsSdkModuleAsync()
-                .ContinueWith(state =>
-                {
-                    return (_BlazoradeTeamsJSModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeTeams.js").AsTask()).Result;
-                });
+            if(null == _BlazoradeTeamsJSModule)
+            {
+                var teamsModule = await this.GetTeamsSdkModuleAsync();
+                _BlazoradeTeamsJSModule = await this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeTeams.js").AsTask();
+            }
+
+            return _BlazoradeTeamsJSModule;
         }
 
-        private Task<IJSObjectReference> _BlazoradeMsalModule;
-        internal Task<IJSObjectReference> GetBlazoradeMsalModuleAsync()
+        private IJSObjectReference _BlazoradeMsalModule;
+        internal async Task<IJSObjectReference> GetBlazoradeMsalModuleAsync()
         {
-            return this.GetMsalModuleAsync()
-                .ContinueWith(state =>
-                {
-                    return (_BlazoradeMsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeMsal.js").AsTask()).Result;
-                });
+            if(null == _BlazoradeMsalModule)
+            {
+                var msalModule = await this.GetMsalModuleAsync();
+                _BlazoradeMsalModule = await this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeMsal.js").AsTask();
+            }
+
+            return _BlazoradeMsalModule;
         }
 
         protected void ValidateCallbackMethod(MethodInfo method)
