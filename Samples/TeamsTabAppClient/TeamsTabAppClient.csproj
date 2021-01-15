@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Blazorade.Teams\Blazorade.Teams.csproj" />
+    <ProjectReference Include="..\..\Blazorade.Teams\Blazorade.Teams.csproj" />
   </ItemGroup>
 
 </Project>
