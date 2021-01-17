@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>0.9.4-preview</Version>
+    <Version>0.9.5-preview</Version>
     <Authors>Mika Berglund</Authors>
     <Company>Blazorade</Company>
     <Product>Blazorade Teams</Product>
