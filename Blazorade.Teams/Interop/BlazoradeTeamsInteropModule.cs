@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Components;
+﻿using Blazorade.Core.Interop;
+using Blazorade.Teams.Components;
 using Blazorade.Teams.Configuration;
 using Microsoft.JSInterop;
 using System;
@@ -54,8 +55,8 @@ namespace Blazorade.Teams.Interop
         /// </remarks>
         public async Task<Context> GetContextAsync()
         {
-            return await new CallbackProxy<Context>(await this.GetBlazoradeTeamsJSModuleAsync())
-                .GetResultAsync("getContext");
+            return await new DotNetInstanceCallbackHandler<Context>(await this.GetBlazoradeTeamsJSModuleAsync(), "getContext")
+                .GetResultAsync();
         }
 
         /// <summary>
@@ -66,8 +67,8 @@ namespace Blazorade.Teams.Interop
         /// </remarks>
         public async Task InitializeAsync()
         {
-            await new CallbackProxy(await this.GetBlazoradeTeamsJSModuleAsync())
-                .GetResultAsync("initialize");
+            await new DotNetInstanceCallbackHandler(await this.GetBlazoradeTeamsJSModuleAsync(), "initialize")
+                .GetResultAsync();
         }
 
         /// <summary>

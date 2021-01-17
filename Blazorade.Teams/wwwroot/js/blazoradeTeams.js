@@ -46,14 +46,14 @@ export function settings_setValidityState(validityState) {
 export function settings_registerOnSaveHandler(args) {
     microsoftTeams.settings.registerOnSaveHandler((evt) => {
         let saveSettings = () => {
-            microsoftTeams.settings.setSettings(args.args.settings);
+            microsoftTeams.settings.setSettings(args.data.settings);
             invokeCallback(args.successCallback);
             evt.notifySuccess();
         };
 
         try {
-            if (isCallbackValid(args.args.savingCallback)) {
-                args.args.savingCallback.target.invokeMethodAsync(args.args.savingCallback.methodName, args.args.savingCallbackData)
+            if (isCallbackValid(args.data.savingCallback)) {
+                args.data.savingCallback.target.invokeMethodAsync(args.data.savingCallback.methodName, args.data.savingCallbackData)
                     .then(() => {
                         saveSettings();
                     });
@@ -78,8 +78,8 @@ export function settings_registerOnRemoveHandler(args) {
         };
 
         try {
-            if (isCallbackValid(args.args.removingCallback)) {
-                args.args.removingCallback.target.invokeMethodAsync(args.args.removingCallback.methodName, args.args.removingCallbackData)
+            if (isCallbackValid(args.data.removingCallback)) {
+                args.data.removingCallback.target.invokeMethodAsync(args.data.removingCallback.methodName, args.data.removingCallbackData)
                     .then(() => {
                         doRemove();
                     });

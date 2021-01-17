@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Configuration;
+﻿using Blazorade.Core.Interop;
+using Blazorade.Teams.Configuration;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,14 @@ namespace Blazorade.Teams.Interop
         public async Task<AuthenticationResult> GetAuthenticationResultAsync(Context context)
         {
             var module = await this.GetBlazoradeMsalModuleAsync();
-            return await new CallbackProxy<AuthenticationResult>(await this.GetBlazoradeMsalModuleAsync())
-                .GetResultAsync(
-                    "getTokenSilent",
-                    args: new Dictionary<string, object>
-                    {
-                        { "context", context },
-                        { "config", new MsalConfig(this.ApplicationSettings) }
-                    }
-                );
+            var data = new Dictionary<string, object>
+            {
+                { "context", context },
+                { "config", new MsalConfig(this.ApplicationSettings) }
+            };
+
+            return await new DotNetInstanceCallbackHandler<AuthenticationResult>(module, "getTokenSilent", data: data)
+                .GetResultAsync();
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using Blazorade.Teams.Components;
+using Blazorade.Core.Interop;
 using Blazorade.Teams.Configuration;
 using Blazorade.Teams.Model;
 using Microsoft.JSInterop;
@@ -32,8 +33,8 @@ namespace Blazorade.Teams.Interop
         /// </summary>
         public async Task<Settings> GetSettingsAsync()
         {
-            CallbackProxy<Settings> proxy = new CallbackProxy<Settings>(await this.GetBlazoradeTeamsJSModuleAsync());
-            return await proxy.GetResultAsync("settings_getSettings");
+            var handler = new DotNetInstanceCallbackHandler<Settings>(await this.GetBlazoradeTeamsJSModuleAsync(), "settings_getSettings");
+            return await handler.GetResultAsync();
         }
 
         /// <summary>
@@ -56,16 +57,16 @@ namespace Blazorade.Teams.Interop
         /// <param name="failureCallback">The callback that will be called when there was an error saving the settings.</param>
         public async Task RegisterOnSaveHandlerAsync(Settings settings, Func<Dictionary<string, object>, Task> savingCallback = null, Dictionary<string, object> savingCallbackData = null, Func<Task> successCallback = null, Func<Task> failureCallback = null)
         {
-            var args = new CallbackMethodArgs
+            var args = new DotNetInstanceCallbackArgs
             {
-                Args = new Dictionary<string, object>()
+                Data = new Dictionary<string, object>()
                 {
                     {  "settings", settings },
-                    { "savingCallback", CallbackDefinition.Create(savingCallback) },
+                    { "savingCallback", DotNetInstanceMethod.Create(savingCallback) },
                     { "savingCallbackData", savingCallbackData }
                 },
-                SuccessCallback = CallbackDefinition.Create(successCallback),
-                FailureCallback = CallbackDefinition.Create(failureCallback)
+                SuccessCallback = DotNetInstanceMethod.Create(successCallback),
+                FailureCallback = DotNetInstanceMethod.Create(failureCallback)
             };
 
             var module = await this.GetBlazoradeTeamsJSModuleAsync();
@@ -91,15 +92,15 @@ namespace Blazorade.Teams.Interop
         /// <returns></returns>
         public async Task RegisterOnRemoveHandlerAsync(Func<Dictionary<string, object>, Task> removingCallback = null, Dictionary<string, object> removingCallbackData = null, Func<Task> successCallback = null, Func<Task> failureCallback = null)
         {
-            var args = new CallbackMethodArgs
+            var args = new DotNetInstanceCallbackArgs
             {
-                Args = new Dictionary<string, object>
+                Data = new Dictionary<string, object>
                 {
-                    { "removingCallback", CallbackDefinition.Create(removingCallback) },
+                    { "removingCallback", DotNetInstanceMethod.Create(removingCallback) },
                     { "removingCallbackData", removingCallbackData }
                 },
-                SuccessCallback = CallbackDefinition.Create(successCallback),
-                FailureCallback =CallbackDefinition.Create(failureCallback)
+                SuccessCallback = DotNetInstanceMethod.Create(successCallback),
+                FailureCallback = DotNetInstanceMethod.Create(failureCallback)
             };
 
             var module = await this.GetBlazoradeTeamsJSModuleAsync();
