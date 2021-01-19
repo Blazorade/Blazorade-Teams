@@ -1,11 +1,13 @@
 ﻿import { invokeCallback } from "./blazoradeTeams.js";
 
-export function getTokenSilent(args, context) {
+export function getTokenSilent(args) {
     args.data.config.auth.redirectUri = `${window.location.protocol}//${window.location.host}/`;
     args.data.config.cache = {
         cacheLocation: "localStorage"
     };
-    
+
+    console.debug("getTokenSilent", args);
+
     let msalClient = new msal.PublicClientApplication(args.data.config);
 
     let homeId = args.data.context.userObjectId + "." + args.data.context.tid;
@@ -27,7 +29,7 @@ export function getTokenSilent(args, context) {
 }
 
 function getTokenWithPopup(successCallback, failureCallback, msalClient, loginHint) {
-    console.log("getTokenWithPopup", msalClient, loginHint);
+    console.debug("getTokenWithPopup", msalClient, loginHint);
 
     try {
         msalClient
