@@ -2,6 +2,7 @@
 
 <TeamsApplication RequireAuthentication="true">
     <ApplicationTemplate Context="ctx">
+        <h2>Basic Profile Info for @ctx.AuthResult.Claims.First(x => x.Type == "name").Value</h2>
         <UserInfoView Context="ctx" />
     </ApplicationTemplate>
     <HostNotAvailableTemplate>

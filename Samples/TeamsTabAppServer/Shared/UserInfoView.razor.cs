@@ -3,6 +3,7 @@ using Blazorade.Teams.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Graph;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace TeamsTabAppServer.Shared
 {
@@ -33,11 +34,13 @@ namespace TeamsTabAppServer.Shared
         [Parameter]
         public string Upn { get; set; }
 
+        [Inject]
+        private IConfiguration configuration { get; set; }
 
 
         protected async override Task OnParametersSetAsync()
         {
-            var authProvider = new AuthenticationProvider(this.Context);
+            var authProvider = new AuthenticationProvider(this.Context, configuration);
             GraphServiceClient client = new GraphServiceClient(authProvider);
             var me = await client.Me.Request().GetAsync();
 
