@@ -27,7 +27,7 @@ namespace TeamsTabAppClient.Shared
 
             var authResult = await this.Context.TeamsInterop.Authentication.GetAuthenticationResultAsync(this.Context.Context);
             var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.RawData);
             var response = await Client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)

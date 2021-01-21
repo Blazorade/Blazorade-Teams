@@ -109,3 +109,16 @@ export function invokeCallback(callback, ...args) {
         console.error("invokeCallbck", "Given callback cannot be used for invoking a callback.", callback, args);
     }
 }
+
+export function getAuthToken(args) {
+    var authTokenRequest = {
+        successCallback: function (result) {
+            invokeCallback(args.successCallback, result);
+        },
+        failureCallback: function(error) {
+            invokeCallback(arg.failureCallback, error);
+        }
+    };
+
+    microsoftTeams.authentication.getAuthToken(authTokenRequest);
+}

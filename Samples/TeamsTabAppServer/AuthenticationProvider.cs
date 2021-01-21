@@ -20,7 +20,7 @@ internal class AuthenticationProvider : IAuthenticationProvider
     public async Task AuthenticateRequestAsync(HttpRequestMessage request)
     {
         var authResult = await this.Context.TeamsInterop.Authentication.GetAuthenticationResultAsync(this.Context.Context);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.RawData);
     }
 }
 }
