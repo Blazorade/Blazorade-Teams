@@ -30,6 +30,9 @@ namespace Blazorade.Teams.Configuration
         /// application specified in <see cref="ClientId"/> is registered in.
         /// </summary>
         public string TenantId { get; set; }
+        public string ClientSecret { get; set; }
+        public string AADInstance { get; set; }
 
+        public string Authority => AADInstance + TenantId;
     }
 }
