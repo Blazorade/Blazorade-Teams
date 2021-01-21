@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Blazorade.Teams.Interop
 {
@@ -24,7 +25,8 @@ namespace Blazorade.Teams.Interop
         /// This class should not be initialized in code. It will be created automatically through Dependency Injection
         /// and provided through the <see cref="TeamsApplication.TeamsInterop"/> property.
         /// </remarks>
-        public BlazoradeTeamsInteropModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule, AuthenticationModule authModule) : base(appOptions, jsRuntime)
+        public BlazoradeTeamsInteropModule(IOptions<AzureAdApplicationOptions> appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule, AuthenticationModule authModule) 
+            : base(appOptions, jsRuntime)
         {
             this.Authentication = authModule ?? throw new ArgumentNullException(nameof(authModule));
             this.AppInitialization = appInitModule ?? throw new ArgumentNullException(nameof(appInitModule));

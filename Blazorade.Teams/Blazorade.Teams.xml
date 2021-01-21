@@ -101,9 +101,9 @@
             Options for configuring your application for authentication.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Configuration.AzureAdApplicationOptions.#ctor">
+        <member name="F:Blazorade.Teams.Configuration.AzureAdApplicationOptions.Section">
             <summary>
-            Creates a new instance.
+            appsettings section 
             </summary>
         </member>
         <member name="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.ClientId">
@@ -117,15 +117,33 @@
             application specified in <see cref="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.ClientId"/> is registered in.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.GetAuthenticationResultAsync(Blazorade.Teams.Interop.Context)">
+        <member name="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.ClientSecret">
             <summary>
-            Uses MSAL.js to authenticate the user specified in <paramref name="context"/> and returns the result
-            of that authentication.
+            The client secret configured in AAD for the application.
+            This is required for the on-behalf-flow when exchanging the token to
+            enable call Microsoft Graph
             </summary>
-            <param name="context">The Teams context to use when resolving the token.</param>
+        </member>
+        <member name="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.AADInstance">
+            <summary>
+            Typically set to https://login.microsoftonline.com/
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.Authority">
+            <summary>
+            Used when validating the JWT
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.GetAuthenticationResultAsync">
+            <summary>
+            Use the TeamsSDK to retrieve the authentication token, triggering a consent dialog if required for the
+            following (currently) supported scopes - email, profile, offline_access, OpenId
+            </summary>
             <remarks>
             The method attempts to perform the authentication silently, but will fall back to using a popup dialog
             if the authentication did not succeed.
+            Not all scopes assigned to an Application will trigger the consent popup. The current work around
+            is to have the Admin grant consent for the Tenant
             </remarks>
         </member>
         <member name="T:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule">
@@ -133,7 +151,7 @@
             The root module for facilitating communications with the Teams JavaScript SDK.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Interop.ApplicationInitializationModule,Blazorade.Teams.Interop.SettingsModule,Blazorade.Teams.Interop.AuthenticationModule)">
+        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.#ctor(Microsoft.Extensions.Options.IOptions{Blazorade.Teams.Configuration.AzureAdApplicationOptions},Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Interop.ApplicationInitializationModule,Blazorade.Teams.Interop.SettingsModule,Blazorade.Teams.Interop.AuthenticationModule)">
             <summary>
             Creates a new instance of the module class.
             </summary>
@@ -427,7 +445,7 @@
             Base class implementation for interop modules.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.InteropModuleBase.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+        <member name="M:Blazorade.Teams.Interop.InteropModuleBase.#ctor(Microsoft.Extensions.Options.IOptions{Blazorade.Teams.Configuration.AzureAdApplicationOptions},Microsoft.JSInterop.IJSRuntime)">
             <summary>
             Creates a new instance of the class.
             </summary>
@@ -502,7 +520,7 @@
             </para>
             </remarks>
         </member>
-        <member name="M:Blazorade.Teams.Interop.SettingsModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+        <member name="M:Blazorade.Teams.Interop.SettingsModule.#ctor(Microsoft.Extensions.Options.IOptions{Blazorade.Teams.Configuration.AzureAdApplicationOptions},Microsoft.JSInterop.IJSRuntime)">
             <summary>
             Creates a new instance.
             </summary>
@@ -572,13 +590,7 @@
             other overloaded methods to specify the needed information.
             </remarks>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Blazorade.Teams.Configuration.AzureAdApplicationOptions})">
-            <summary>
-            Adds services needed by Blazorade Teams and allows you to specify the application configuration required
-            in order to perform user authentication.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Blazorade.Teams.Configuration.AzureAdApplicationOptions})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
             using other services configured in the application.

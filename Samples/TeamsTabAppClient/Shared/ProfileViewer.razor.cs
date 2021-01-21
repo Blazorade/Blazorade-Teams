@@ -1,8 +1,5 @@
 ﻿using Blazorade.Teams.Model;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -21,11 +18,11 @@ namespace TeamsTabAppClient.Shared
 
         private static HttpClient Client = new HttpClient();
 
-        protected async override Task OnParametersSetAsync()
+        protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
 
-            var authResult = await this.Context.TeamsInterop.Authentication.GetAuthenticationResultAsync(this.Context.Context);
+            var authResult = await this.Context.TeamsInterop.Authentication.GetAuthenticationResultAsync();
             var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.RawData);
             var response = await Client.SendAsync(request);

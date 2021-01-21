@@ -77,7 +77,8 @@ namespace Blazorade.Teams.Components
         [Parameter]
         public RenderFragment<ApplicationContext> LoadingTemplate { get; set; }
 
-        private ApplicationContext _ApplicationContext = new ApplicationContext { };
+
+        private ApplicationContext _ApplicationContext = new();
         /// <summary>
         /// The application context.
         /// </summary>
@@ -89,8 +90,7 @@ namespace Blazorade.Teams.Components
             get => _ApplicationContext;
             set
             {
-                if (null == value) throw new ArgumentNullException();
-                _ApplicationContext = value;
+                _ApplicationContext = value ?? throw new ArgumentNullException();
             }
         }
 
@@ -111,31 +111,31 @@ namespace Blazorade.Teams.Components
         /// <summary>
         /// Controls the rendering of the component.
         /// </summary>
-        protected async override Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
             
             if(firstRender)
             {
-                var isHostAvailable = await this.TeamsInterop.IsTeamsHostAvailableAsync();
+                var isHostAvailable = await TeamsInterop.IsTeamsHostAvailableAsync();
                 if(isHostAvailable)
                 {
                     // Now we know that the app is properly loaded, so we can set the interop module
                     // on the application context for easy access.
-                    this.ApplicationContext.TeamsInterop = this.TeamsInterop;
+                    ApplicationContext.TeamsInterop = TeamsInterop;
                     try
                     {
-                        await this.InitializeAsync();
+                        await InitializeAsync();
                     }
                     catch (Exception ex)
                     {
-                        await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
+                        await TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
                     }
                 }
                 else
                 {
-                    this.ShowHostNotAvailableTemplate = true;
-                    this.StateHasChanged();
+                    ShowHostNotAvailableTemplate = true;
+                    StateHasChanged();
                 }
             }
         }
@@ -156,8 +156,11 @@ namespace Blazorade.Teams.Components
             // Note, you still have to call the NotifySuccessAsync method at some point to tell
             // Teams that the application loading has completed successfully. Otherwise Teams will
             // show an error screen after some time.
-            await this.TeamsInterop.InitializeAsync().ConfigureAwait(true);
-            await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync().ConfigureAwait(true);
+            await TeamsInterop.InitializeAsync()
+                              .ConfigureAwait(true);
+            await TeamsInterop.AppInitialization
+                              .NotifyAppLoadedAsync()
+                              .ConfigureAwait(true);
             //---------------------------------------------------------------------------------------
 
 
@@ -167,20 +170,26 @@ namespace Blazorade.Teams.Components
             // application's context and call the StateHasChanged method. This will trigger
             // a rerender of the component, in case the application wants to use the context for
             // some purposes. Not all applications need authentication, you know.
-            var context = await this.TeamsInterop.GetContextAsync().ConfigureAwait(true);
-            this.ApplicationContext.Context = context;
-            this.StateHasChanged();
+            var context = await TeamsInterop.GetContextAsync()
+                                            .ConfigureAwait(true);
+            ApplicationContext.Context = context;
+            StateHasChanged();
             //---------------------------------------------------------------------------------------
 
-            if (this.RequireAuthentication)
+            if (RequireAuthentication)
             {
                 //-----------------------------------------------------------------------------------
-                var authResult = await this.TeamsInterop.Authentication.GetAuthenticationResultAsync(context).ConfigureAwait(true);
-                this.ApplicationContext.AuthResult = authResult;
-                await this.TeamsInterop.AppInitialization.NotifySuccessAsync().ConfigureAwait(true);
+                var authResult = await TeamsInterop.Authentication
+                                                   .GetAuthenticationResultAsync()
+                                                   .ConfigureAwait(true);
+                ApplicationContext.AuthResult = authResult;
 
-                this.ShowApplicationTemplate = true;
-                this.StateHasChanged();
+                await TeamsInterop.AppInitialization
+                                  .NotifySuccessAsync()
+                                  .ConfigureAwait(true);
+
+                ShowApplicationTemplate = true;
+                StateHasChanged();
                 //-----------------------------------------------------------------------------------
             }
             else
@@ -190,9 +199,11 @@ namespace Blazorade.Teams.Components
                 // application has successfully loaded. We'll also set the flag that will instruct
                 // the UI to render the ApplicationTemplate template and call StateHasChanged to
                 // have the component do one more rendering round.
-                await this.TeamsInterop.AppInitialization.NotifySuccessAsync().ConfigureAwait(true);
-                this.ShowApplicationTemplate = true;
-                this.StateHasChanged();
+                await TeamsInterop.AppInitialization
+                                  .NotifySuccessAsync()
+                                  .ConfigureAwait(true);
+                ShowApplicationTemplate = true;
+                StateHasChanged();
                 //-----------------------------------------------------------------------------------
             }
         }

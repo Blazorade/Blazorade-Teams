@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blazorade.Teams.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -38,30 +40,24 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<AzureAdApplicationOptions> config)
         {
             return services
-                .AddSingleton((p) =>
-                {
-                    var options = new AzureAdApplicationOptions();
-                    config?.Invoke(options);
-                    return options;
-                })
-                .AddBlazoradeTeams();
+                   .AddSingleton((p) =>
+                                 {
+                                     var options = new AzureAdApplicationOptions();
+                                     config?.Invoke(options);
+                                     return options;
+                                 })
+                   .AddBlazoradeTeams();
         }
 
         /// <summary>
         /// Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
         /// using other services configured in the application.
         /// </summary>
-        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<IServiceProvider, AzureAdApplicationOptions> config)
+        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, IConfiguration configuration)
         {
             return services
-                .AddSingleton((p) =>
-                {
-                    var options = new AzureAdApplicationOptions();
-                    config?.Invoke(p, options);
-                    return options;
-                })
-                .AddBlazoradeTeams()
-                ;
+                   .Configure<AzureAdApplicationOptions>(options => configuration.GetSection(AzureAdApplicationOptions.Section).Bind(options))
+                   .AddBlazoradeTeams();
         }
     }
 }

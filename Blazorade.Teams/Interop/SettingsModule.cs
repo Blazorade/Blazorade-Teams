@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Blazorade.Teams.Interop
 {
@@ -25,7 +26,11 @@ namespace Blazorade.Teams.Interop
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public SettingsModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
+        public SettingsModule(IOptions<AzureAdApplicationOptions> appOptions, IJSRuntime jsRuntime)
+            : base(appOptions, jsRuntime)
+        {
+
+        }
 
 
         /// <summary>

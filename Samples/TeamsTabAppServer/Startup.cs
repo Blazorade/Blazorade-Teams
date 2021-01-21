@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 using Newtonsoft.Json;
 
 namespace TeamsTabAppServer
@@ -30,11 +31,7 @@ namespace TeamsTabAppServer
             services
                 .AddRazorPages().Services
                 .AddServerSideBlazor().Services
-                .AddBlazoradeTeams((p, c) =>
-                {
-                    Configuration.GetSection("teamsApp")
-                                 .Bind(c);
-                });
+                .AddBlazoradeTeams(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

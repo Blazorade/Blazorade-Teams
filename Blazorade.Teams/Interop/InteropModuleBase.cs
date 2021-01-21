@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Blazorade.Teams.Interop
 {
@@ -20,9 +21,9 @@ namespace Blazorade.Teams.Interop
         /// </summary>
         /// <param name="appOptions"></param>
         /// <param name="jsRuntime"></param>
-        protected InteropModuleBase(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime)
+        protected InteropModuleBase(IOptions<AzureAdApplicationOptions> appOptions, IJSRuntime jsRuntime)
         {
-            this.ApplicationSettings = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
+            this.ApplicationSettings = appOptions.Value ?? throw new ArgumentNullException(nameof(appOptions));
             this.JSRuntime = jsRuntime ?? throw new ArgumentNullException(nameof(jsRuntime));
         }
 

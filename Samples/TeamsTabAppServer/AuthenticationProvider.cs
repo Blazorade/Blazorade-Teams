@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Blazorade.Teams.Configuration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace TeamsTabAppServer
@@ -14,15 +13,13 @@ namespace TeamsTabAppServer
     {
         private const string AssertionType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
         private readonly ApplicationContext context;
-        private readonly AzureAdApplicationOptions section;
+        private readonly AzureAdApplicationOptions configuration;
 
-        public AuthenticationProvider(ApplicationContext context, IConfiguration configuration)
+        public AuthenticationProvider(ApplicationContext context, AzureAdApplicationOptions configuration)
         {
             this.context = context
                            ?? throw new ArgumentNullException(nameof(context));
-            section = new AzureAdApplicationOptions();
-            configuration.GetSection("teamsApp")
-                         .Bind(section);
+            this.configuration = configuration;
         }
 
         public async Task AuthenticateRequestAsync(HttpRequestMessage request)
@@ -34,8 +31,8 @@ namespace TeamsTabAppServer
             // Here we specify that assertion's type, that is a JWT Bearer token
             var userAssertion = new UserAssertion(token, AssertionType); 
 
-            var authContext = new AuthenticationContext(section.Authority, false);
-            var clientCredential = new ClientCredential(section.ClientId, section.ClientSecret);
+            var authContext = new AuthenticationContext(configuration.Authority);
+            var clientCredential = new ClientCredential(configuration.ClientId, configuration.ClientSecret);
 
             //Acquire access token
             var result = await authContext.AcquireTokenAsync("https://graph.microsoft.com", clientCredential, userAssertion);
