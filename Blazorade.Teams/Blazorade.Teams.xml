@@ -4,6 +4,32 @@
         <name>Blazorade.Teams</name>
     </assembly>
     <members>
+        <member name="T:Blazorade.Teams.Authentication.OnBehalfOfFlow">
+            <summary>
+            Exchange an authenticated user token for an on-behalf-of token for
+            calling downstream API's
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Authentication.OnBehalfOfFlow.ExchangeToken(System.IdentityModel.Tokens.Jwt.JwtSecurityToken,System.String)">
+            <summary>
+            Perform an On-Behalf-Of request with the following scopes for passing to the down stream api
+            openid, offline_access, email, profile
+            </summary>
+            <param name="userToken"></param>
+            <param name="api">api the requested scopes are valid for i.e. https://graph.mircosoft.com</param>
+            <returns>Configured IAuthenticationProvider, or null when consent is required</returns>
+        </member>
+        <member name="M:Blazorade.Teams.Authentication.OnBehalfOfFlow.ExchangeToken(System.IdentityModel.Tokens.Jwt.JwtSecurityToken,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Perform an On-Behalf-Of request with specific scopes needed for the downstream api call.
+            This allows for incremental consenting - a user will ultimately only consent to the permissions needed to get
+            their job done
+            </summary>
+            <param name="userToken"></param>
+            <param name="api">api the requested scopes are valid for i.e. https://graph.mircosoft.com</param>
+            <param name="scopes"></param>
+            <returns>Authentication header value with the bearer token set, or null when consent is required</returns>
+        </member>
         <member name="T:Blazorade.Teams.Components.TeamsApplication">
             <summary>
             The root component for all application pages in your Microsoft Teams tab application.
@@ -145,6 +171,20 @@
             Not all scopes assigned to an Application will trigger the consent popup. The current work around
             is to have the Admin grant consent for the Tenant
             </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.NotifyConsentSuccess(System.String)">
+            <summary>
+            Call microsoftTeams.authentication.notifySuccess with the new token retrieved
+            from the consenting process
+            </summary>
+            <param name="accessToken"></param>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.NotifyConsentFailure(System.String)">
+            <summary>
+            Call  microsoftTeams.authentication.notifyFailure when the user has not consented to
+            the requested permission/s
+            </summary>
+            <param name="error"></param>
         </member>
         <member name="T:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule">
             <summary>
@@ -590,10 +630,27 @@
             other overloaded methods to specify the needed information.
             </remarks>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Blazorade.Teams.Configuration.AzureAdApplicationOptions})">
+            <summary>
+            Adds services needed by Blazorade Teams and allows you to specify the application configuration required
+            in order to perform user authentication.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Blazorade.Teams.Configuration.AzureAdApplicationOptions})">
+            <summary>
+            Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
+            using other services configured in the application.
+            </summary>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
             using other services configured in the application.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeamsSSO(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds services that support the Teams SSO authentication model
             </summary>
         </member>
     </members>

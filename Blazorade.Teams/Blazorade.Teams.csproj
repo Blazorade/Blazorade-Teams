@@ -26,6 +26,17 @@
     <DocumentationFile>Blazorade.Teams.xml</DocumentationFile>
   </PropertyGroup>
 
+  <!--<ItemGroup>
+    <Compile Remove="Authemtication\**" />
+    <Compile Remove="NewFolder\**" />
+    <Content Remove="Authemtication\**" />
+    <Content Remove="NewFolder\**" />
+    <EmbeddedResource Remove="Authemtication\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="Authemtication\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>-->
+
   <ItemGroup>
     <None Remove="Blazorade.Teams.xml" />
     <None Include="wwwroot\Blazorade-Icon-128.png">
@@ -49,6 +60,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Graph" Version="3.21.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.25.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />

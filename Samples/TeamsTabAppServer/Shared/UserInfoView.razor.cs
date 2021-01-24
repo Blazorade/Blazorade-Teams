@@ -1,11 +1,8 @@
-﻿using System;
-using Blazorade.Teams.Model;
+﻿using Blazorade.Teams.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Graph;
 using System.Threading.Tasks;
-using Blazorade.Teams.Configuration;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Blazorade.Teams.Authentication;
 
 namespace TeamsTabAppServer.Shared
 {
@@ -37,13 +34,16 @@ namespace TeamsTabAppServer.Shared
         public string Upn { get; set; }
 
         [Inject]
-        private IOptions<AzureAdApplicationOptions> configuration { get; set; }
+        private OnBehalfOfFlow onBehalfOfFlow { get; set; }
+
+        [Inject]
+        private NavigationManager navigator { get; set; }
 
 
         protected async override Task OnParametersSetAsync()
         {
-            var authProvider = new AuthenticationProvider(this.Context, configuration.Value);
-            GraphServiceClient client = new GraphServiceClient(authProvider);
+            var authProvider = await onBehalfOfFlow.ExchangeToken(Context.AuthResult);
+            var client = new GraphServiceClient(authProvider);
             var me = await client.Me.Request().GetAsync();
 
             this.DisplayName = me.DisplayName;

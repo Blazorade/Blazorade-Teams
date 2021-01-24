@@ -122,3 +122,23 @@ export function getAuthToken(args) {
 
     microsoftTeams.authentication.getAuthToken(authTokenRequest);
 }
+
+export function showConsentDialog(args) {
+    var queryString = "?scopes=" + args.data.scopes + (args.data.api ? "&api=" + args.data.api : "");
+
+    microsoftTeams.authentication.authenticate({
+        url: window.location.origin + "/auth-start" + queryString,
+        width: 600,
+        height: 535,
+        successCallback: (result) => invokeCallback(args.successCallback, result),
+        failureCallback: (reason) => invokeCallback(args.failureCallback, reason)
+    });
+}
+
+export function notifyConsentSuccess(args) {
+    microsoftTeams.authentication.notifySuccess({ consented: true, token: args.data.token });
+}
+
+export function notifyConsentFailure(args) {
+    microsoftTeams.authentication.notifySuccess({ consented: false, error: args.data.error });
+}

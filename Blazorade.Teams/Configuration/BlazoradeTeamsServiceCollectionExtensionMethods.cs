@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blazorade.Teams.Authentication;
 using Blazorade.Teams.Model;
 using Microsoft.Extensions.Configuration;
 
@@ -53,11 +54,37 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
         /// using other services configured in the application.
         /// </summary>
+        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<IServiceProvider, AzureAdApplicationOptions> config)
+        {
+            return services
+                   .AddSingleton((p) =>
+                                 {
+                                     var options = new AzureAdApplicationOptions();
+                                     config?.Invoke(p, options);
+                                     return options;
+                                 })
+                   .AddBlazoradeTeams()
+                ;
+        }
+
+        /// <summary>
+        /// Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
+        /// using other services configured in the application.
+        /// </summary>
         public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, IConfiguration configuration)
         {
             return services
                    .Configure<AzureAdApplicationOptions>(options => configuration.GetSection(AzureAdApplicationOptions.Section).Bind(options))
                    .AddBlazoradeTeams();
+        }
+
+        /// <summary>
+        /// Adds services that support the Teams SSO authentication model
+        /// </summary>
+        public static IServiceCollection AddBlazoradeTeamsSSO(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<OnBehalfOfFlow>();
         }
     }
 }
