@@ -1,5 +1,9 @@
 ﻿@inherits BlazoradeComponentBase
 @inject BlazoradeTeamsInteropModule TeamsInterop
+@inject NavigationManager NavMan
+@inject AzureAdApplicationOptions AppOptions
+@inject IJSRuntime JSRuntime
+
 
 @if (this.ShowApplicationTemplate && null != this.ApplicationTemplate)
 {
@@ -9,7 +13,7 @@ else if (this.ShowHostNotAvailableTemplate && null != this.HostNotAvailableTempl
 {
     @this.HostNotAvailableTemplate
 }
-else if(null != this.LoadingTemplate)
+else if (null != this.LoadingTemplate)
 {
     @this.LoadingTemplate(this.ApplicationContext)
 }

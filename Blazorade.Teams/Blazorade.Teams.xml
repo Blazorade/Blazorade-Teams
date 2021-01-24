@@ -90,10 +90,12 @@
         </member>
         <member name="M:Blazorade.Teams.Components.TeamsApplication.InitializeAsync">
             <summary>
-            Handles the main initialization of the component.
+            Handles application initialization.
             </summary>
             <remarks>
-            This should not be called if the Teams host context is not available.
+            This includes initializing the Teams SDK and notifying that the application was properly 
+            loaded. After this, other SDK functions can be used. This will also for instance remove 
+            the loader icon from Teams so that your application can start displaying a UI.
             </remarks>
         </member>
         <member name="T:Blazorade.Teams.Configuration.AzureAdApplicationOptions">
@@ -117,16 +119,34 @@
             application specified in <see cref="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.ClientId"/> is registered in.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.GetAuthenticationResultAsync(Blazorade.Teams.Interop.Context)">
+        <member name="T:Blazorade.Teams.Interop.AuthenticationModule">
             <summary>
-            Uses MSAL.js to authenticate the user specified in <paramref name="context"/> and returns the result
-            of that authentication.
+            Represents the authentication module in the Teams SDK.
             </summary>
-            <param name="context">The Teams context to use when resolving the token.</param>
-            <remarks>
-            The method attempts to perform the authentication silently, but will fall back to using a popup dialog
-            if the authentication did not succeed.
-            </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.NotifyFailureAsync(System.String,System.String)">
+            <summary>
+            Notifies the frame that initiated this authentication request that the request failed. This function is
+            usable only on the authentication window. This call causes the authentication window to be closed.
+            </summary>
+            <param name="reason">Failure reason.</param>
+            <param name="callbackUrl">Specifies the url to redirect back to if the client is Win32 Outlook.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.NotifySuccessAsync(System.String,System.String)">
+            <summary>
+            Notifies the frame that initiated this authentication request that the request was successful. This function 
+            is usable only on the authentication window. This call causes the authentication window to be closed.
+            </summary>
+            <param name="result">
+            Specifies a result for the authentication. If specified, the frame that initiated the authentication
+            pop-up receives this value in its callback.
+            </param>
+            <param name="callbackUrl">Specifies the url to redirect back to if the client is Win32 Outlook.</param>
+            <returns></returns>
         </member>
         <member name="T:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule">
             <summary>
@@ -156,6 +176,24 @@
             <summary>
             A module that represents the <c>settings</c> module in the Teams SDK.
             </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.AcquireTokenAsync">
+            <summary>
+            Acquires an access token for the currently logged on user using the application configuration.
+            </summary>
+            <remarks>
+            This method first tries to acquire the token silently. If that fails, then the Teams authentication
+            dialog is used.
+            </remarks>
+        </member>
+        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.AcquireTokenSilentAsync">
+            <summary>
+            Returns the access token for the application silently, meaning no user interaction is required.
+            </summary>
+            <remarks>
+            This requires that the token is cached by MSAL from a previous token request.
+            </remarks>
+            <returns>Returns the access token or <c>null</c> if it was not available.</returns>
         </member>
         <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.GetContextAsync">
             <summary>

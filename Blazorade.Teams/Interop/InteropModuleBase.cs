@@ -46,33 +46,18 @@ namespace Blazorade.Teams.Interop
         {
             if(null == _BlazoradeTeamsJSModule)
             {
+                //-------------------------------------------------------------------------
+                // First import the JS modules that blazoradeTeams.js is dependent upon.
                 var teamsModule = await this.GetTeamsSdkModuleAsync();
+                var msalModule = await this.GetMsalModuleAsync();
+                //-------------------------------------------------------------------------
+
                 _BlazoradeTeamsJSModule = await this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeTeams.js").AsTask();
             }
 
             return _BlazoradeTeamsJSModule;
         }
 
-        private IJSObjectReference _BlazoradeMsalModule;
-        internal async Task<IJSObjectReference> GetBlazoradeMsalModuleAsync()
-        {
-            if(null == _BlazoradeMsalModule)
-            {
-                var msalModule = await this.GetMsalModuleAsync();
-                _BlazoradeMsalModule = await this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeMsal.js").AsTask();
-            }
-
-            return _BlazoradeMsalModule;
-        }
-
-        protected void ValidateCallbackMethod(MethodInfo method)
-        {
-            var attribute = method.GetCustomAttribute<JSInvokableAttribute>();
-            if (null == attribute)
-            {
-                throw new ArgumentException($"The given callback must be a defined method decorate with the '{typeof(JSInvokableAttribute).FullName}' attribute.", nameof(method));
-            }
-        }
 
 
         private Task<IJSObjectReference> _MsalModule;
@@ -86,9 +71,7 @@ namespace Blazorade.Teams.Interop
         {
             return _TeamsSdkModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "https://statics.teams.cdn.office.net/sdk/v1.7.0/js/MicrosoftTeams.min.js").AsTask();
         }
+
     }
-
-
-
 
 }

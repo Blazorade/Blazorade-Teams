@@ -1,53 +1,64 @@
-﻿import { invokeCallback } from "./blazoradeTeams.js";
+﻿import {
+    invokeCallback
+} from "./blazoradeTeams.js";
 
-export function getTokenSilent(args) {
-    args.data.config.auth.redirectUri = `${window.location.protocol}//${window.location.host}/`;
-    args.data.config.cache = {
-        cacheLocation: "localStorage"
-    };
+export function acquireTokenSilent(args) {
+    console.debug("acquireTokenSilent", args);
 
-    console.debug("getTokenSilent", args);
+    let msalClient = createMsalClient(args);
+    let request = createTokenRequest(msalClient, args);
 
-    let msalClient = new msal.PublicClientApplication(args.data.config);
-
-    let homeId = args.data.context.userObjectId + "." + args.data.context.tid;
-    let account = msalClient.getAccountByHomeId(homeId);
-
-    msalClient
-        .acquireTokenSilent({
-            scopes: [".default"],
-            account: account
-        })
+    msalClient.acquireTokenSilent(request)
         .then(result => {
+            console.debug("acquireTokenSilent.succeeded", result);
             invokeCallback(args.successCallback, result);
         })
         .catch(err => {
-            console.warn("failed getting token silently", "Falling back to popup", err);
-            getTokenWithPopup(args.successCallback, args.failureCallback, msalClient, args.data.context.loginHint);
+            console.warn("acquireTokenSilent.failed", "must fall back to using popup", err);
+            invokeCallback(args.successCallback, null);
         })
         ;
 }
 
-function getTokenWithPopup(successCallback, failureCallback, msalClient, loginHint) {
-    console.debug("getTokenWithPopup", msalClient, loginHint);
+export function acquireTokenRedirect(args) {
+    console.debug("acquireTokenRedirect", args);
 
-    try {
-        msalClient
-            .loginPopup({
-                scopes: [".default"],
-                loginHint
-            })
-            .then(result => {
-                invokeCallback(successCallback, result);
-            })
-            .catch(err => {
-                console.error("getTokenWithPopup", err);
-                invokeCallback(failureCallback, err);
-            })
-            ;
-    }
-    catch (err) {
-        console.error("getTokenWithPopup", err);
-        invokeCallback(failureCallback, err);
-    }
+    let msalClient = createMsalClient(args);
+    let request = createTokenRequest(msalClient, args);
+
+    msalClient.acquireTokenRedirect(request)
+        .then(result => {
+            console.debug("acquireTokenRedirect.succeeded", result);
+            invokeCallback(args.successCallback, result);
+        })
+        .catch(err => {
+            console.error("acquireTokenRedirect.failed", err);
+            invokeCallback(args.successCallback, null);
+        })
+        ;
+}
+
+
+
+function createMsalClient(args) {
+    args.data.config.auth.redirectUri = window.location.origin;
+    args.data.config.cache = {
+        cacheLocation: "localStorage"
+    };
+
+    let msalClient = new msal.PublicClientApplication(args.data.config);
+
+    console.debug("createMsalClient", args, msalClient);
+
+    return msalClient;
+}
+
+function createTokenRequest(msalClient, args) {
+    let homeId = args.data.context.userObjectId + "." + args.data.context.tid;
+    let account = null;//msalClient.getAccountByHomeId(homeId);
+
+    return {
+        scopes: [".default"],
+        account: account
+    };
 }

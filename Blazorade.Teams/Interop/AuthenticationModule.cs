@@ -9,32 +9,43 @@ using System.Threading.Tasks;
 
 namespace Blazorade.Teams.Interop
 {
+    /// <summary>
+    /// Represents the authentication module in the Teams SDK.
+    /// </summary>
     public class AuthenticationModule : InteropModuleBase
     {
+        /// <inheritdoc/>
         public AuthenticationModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
 
 
-        /// <summary>
-        /// Uses MSAL.js to authenticate the user specified in <paramref name="context"/> and returns the result
-        /// of that authentication.
-        /// </summary>
-        /// <param name="context">The Teams context to use when resolving the token.</param>
-        /// <remarks>
-        /// The method attempts to perform the authentication silently, but will fall back to using a popup dialog
-        /// if the authentication did not succeed.
-        /// </remarks>
-        public async Task<AuthenticationResult> GetAuthenticationResultAsync(Context context)
-        {
-            var module = await this.GetBlazoradeMsalModuleAsync();
-            var data = new Dictionary<string, object>
-            {
-                { "context", context },
-                { "config", new MsalConfig(this.ApplicationSettings) }
-            };
 
-            return await new DotNetInstanceCallbackHandler<AuthenticationResult>(module, "getTokenSilent", data: data)
-                .GetResultAsync();
+        /// <summary>
+        /// Notifies the frame that initiated this authentication request that the request failed. This function is
+        /// usable only on the authentication window. This call causes the authentication window to be closed.
+        /// </summary>
+        /// <param name="reason">Failure reason.</param>
+        /// <param name="callbackUrl">Specifies the url to redirect back to if the client is Win32 Outlook.</param>
+        /// <returns></returns>
+        public async Task NotifyFailureAsync(string reason = null, string callbackUrl = null)
+        {
+            var module = await this.GetBlazoradeTeamsJSModuleAsync();
+            await module.InvokeVoidAsync("authentication_notifyFailure", reason, callbackUrl);
         }
 
+        /// <summary>
+        /// Notifies the frame that initiated this authentication request that the request was successful. This function 
+        /// is usable only on the authentication window. This call causes the authentication window to be closed.
+        /// </summary>
+        /// <param name="result">
+        /// Specifies a result for the authentication. If specified, the frame that initiated the authentication
+        /// pop-up receives this value in its callback.
+        /// </param>
+        /// <param name="callbackUrl">Specifies the url to redirect back to if the client is Win32 Outlook.</param>
+        /// <returns></returns>
+        public async Task NotifySuccessAsync(string result = null, string callbackUrl = null)
+        {
+            var module = await this.GetBlazoradeTeamsJSModuleAsync();
+            await module.InvokeVoidAsync("authentication_notifySuccess", result, callbackUrl);
+        }
     }
 }

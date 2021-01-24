@@ -7,20 +7,23 @@ using System.Threading.Tasks;
 
 namespace TeamsTabAppServer
 {
-internal class AuthenticationProvider : IAuthenticationProvider
-{
-    public AuthenticationProvider(ApplicationContext context)
+    internal class AuthenticationProvider : IAuthenticationProvider
     {
-        this.Context = context
-                ?? throw new ArgumentNullException(nameof(context));
-    }
+        public AuthenticationProvider(ApplicationContext context)
+        {
+            this.Context = context
+                    ?? throw new ArgumentNullException(nameof(context));
+        }
 
-    private ApplicationContext Context;
+        private ApplicationContext Context;
 
-    public async Task AuthenticateRequestAsync(HttpRequestMessage request)
-    {
-        var authResult = await this.Context.TeamsInterop.Authentication.GetAuthenticationResultAsync(this.Context.Context);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+        public async Task AuthenticateRequestAsync(HttpRequestMessage request)
+        {
+            var authResult = await this.Context.TeamsInterop.AcquireTokenAsync();
+            if (null != authResult)
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+            }
+        }
     }
-}
 }
