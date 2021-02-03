@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Configuration;
+﻿using Blazorade.Msal.Configuration;
+using Blazorade.Teams.Configuration;
 using Blazorade.Teams.Interop;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<ApplicationInitializationModule>()
                 .AddScoped<SettingsModule>()
                 .AddScoped<AuthenticationModule>()
+                .AddBlazoradeMsal((sp, config) =>
+                {
+                    var options = sp.GetService<AzureAdApplicationOptions>();
+
+                    config.ClientId = options.ClientId;
+                    config.TenantId = options.TenantId;
+                    config.InteractiveLoginMode = InteractiveLoginMode.Redirect;
+                })
                 ;
         }
 

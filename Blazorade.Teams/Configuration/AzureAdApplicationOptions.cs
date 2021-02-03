@@ -16,7 +16,6 @@ namespace Blazorade.Teams.Configuration
         /// </summary>
         public AzureAdApplicationOptions()
         {
-            this.TenantId = "common";
         }
 
 
