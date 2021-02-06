@@ -1,0 +1,10 @@
+﻿@page "/mymail"
+
+<TeamsApplication RequireScopes="User.Read,Mail.Read">
+    <ApplicationTemplate>
+        <MailView Context="context" />
+    </ApplicationTemplate>
+    <LoadingTemplate>
+        <p>Loading...</p>
+    </LoadingTemplate>
+</TeamsApplication>
