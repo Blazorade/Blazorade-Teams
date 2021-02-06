@@ -20,7 +20,7 @@ namespace Blazorade.Teams.Interop
         /// </summary>
         /// <param name="appOptions"></param>
         /// <param name="jsRuntime"></param>
-        protected InteropModuleBase(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime)
+        protected InteropModuleBase(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime)
         {
             this.ApplicationSettings = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
             this.JSRuntime = jsRuntime ?? throw new ArgumentNullException(nameof(jsRuntime));
@@ -34,7 +34,7 @@ namespace Blazorade.Teams.Interop
         /// <summary>
         /// The application settings configured on the application.
         /// </summary>
-        protected AzureAdApplicationOptions ApplicationSettings { get; private set; }
+        protected BlazoradeTeamsOptions ApplicationSettings { get; private set; }
 
 
         private IJSObjectReference _BlazoradeTeamsJSModule;
@@ -46,49 +46,25 @@ namespace Blazorade.Teams.Interop
         {
             if(null == _BlazoradeTeamsJSModule)
             {
+                //-------------------------------------------------------------------------
+                // First import the JS modules that blazoradeTeams.js is dependent upon.
                 var teamsModule = await this.GetTeamsSdkModuleAsync();
+                //-------------------------------------------------------------------------
+
                 _BlazoradeTeamsJSModule = await this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeTeams.js").AsTask();
             }
 
             return _BlazoradeTeamsJSModule;
         }
 
-        private IJSObjectReference _BlazoradeMsalModule;
-        internal async Task<IJSObjectReference> GetBlazoradeMsalModuleAsync()
-        {
-            if(null == _BlazoradeMsalModule)
-            {
-                var msalModule = await this.GetMsalModuleAsync();
-                _BlazoradeMsalModule = await this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeMsal.js").AsTask();
-            }
 
-            return _BlazoradeMsalModule;
-        }
-
-        protected void ValidateCallbackMethod(MethodInfo method)
-        {
-            var attribute = method.GetCustomAttribute<JSInvokableAttribute>();
-            if (null == attribute)
-            {
-                throw new ArgumentException($"The given callback must be a defined method decorate with the '{typeof(JSInvokableAttribute).FullName}' attribute.", nameof(method));
-            }
-        }
-
-
-        private Task<IJSObjectReference> _MsalModule;
-        private Task<IJSObjectReference> GetMsalModuleAsync()
-        {
-            return _MsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "https://alcdn.msftauth.net/browser/2.8.0/js/msal-browser.min.js").AsTask();
-        }
 
         private Task<IJSObjectReference> _TeamsSdkModule;
         private Task<IJSObjectReference> GetTeamsSdkModuleAsync()
         {
             return _TeamsSdkModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "https://statics.teams.cdn.office.net/sdk/v1.7.0/js/MicrosoftTeams.min.js").AsTask();
         }
+
     }
-
-
-
 
 }

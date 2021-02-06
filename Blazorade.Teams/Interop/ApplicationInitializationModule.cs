@@ -10,7 +10,7 @@ namespace Blazorade.Teams.Interop
 {
     public class ApplicationInitializationModule : InteropModuleBase
     {
-        public ApplicationInitializationModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
+        public ApplicationInitializationModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
 
 
 

@@ -24,7 +24,7 @@ namespace Blazorade.Teams.Interop
         /// This class should not be initialized in code. It will be created automatically through Dependency Injection
         /// and provided through the <see cref="TeamsApplication.TeamsInterop"/> property.
         /// </remarks>
-        public BlazoradeTeamsInteropModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule, AuthenticationModule authModule) : base(appOptions, jsRuntime)
+        public BlazoradeTeamsInteropModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule, AuthenticationModule authModule) : base(appOptions, jsRuntime)
         {
             this.Authentication = authModule ?? throw new ArgumentNullException(nameof(authModule));
             this.AppInitialization = appInitModule ?? throw new ArgumentNullException(nameof(appInitModule));
@@ -45,6 +45,7 @@ namespace Blazorade.Teams.Interop
         /// A module that represents the <c>settings</c> module in the Teams SDK.
         /// </summary>
         public SettingsModule Settings { get; protected set; }
+
 
 
         /// <summary>

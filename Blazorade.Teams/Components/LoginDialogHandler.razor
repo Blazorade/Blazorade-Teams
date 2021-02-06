@@ -1,0 +1,10 @@
+﻿@inherits BlazoradeComponentBase
+
+@inject BlazoradeMsalService MsalService
+@inject BlazoradeTeamsInteropModule TeamsInterop
+@inject NavigationManager NavMan
+
+@if(null != this.ChildContent)
+{
+    @this.ChildContent
+}

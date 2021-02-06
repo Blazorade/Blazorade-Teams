@@ -37,7 +37,7 @@ namespace TeamsTabAppServer.Shared
 
         protected async override Task OnParametersSetAsync()
         {
-            var authProvider = new AuthenticationProvider(this.Context);
+            var authProvider = new AuthenticationProvider(this.Context, this.MsalService);
             GraphServiceClient client = new GraphServiceClient(authProvider);
             var me = await client.Me.Request().GetAsync();
 

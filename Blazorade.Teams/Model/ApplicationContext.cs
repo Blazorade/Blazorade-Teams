@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Interop;
+﻿using Blazorade.Msal.Security;
+using Blazorade.Teams.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;

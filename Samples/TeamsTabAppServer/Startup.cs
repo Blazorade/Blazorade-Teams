@@ -28,6 +28,8 @@ namespace TeamsTabAppServer
                     var config = root.GetSection("teamsApp");
                     c.ClientId = config.GetValue<string>("clientId");
                     c.TenantId = config.GetValue<string>("tenantId");
+
+                    c.LoginUrl = "/login";
                 });
         }
 

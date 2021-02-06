@@ -25,7 +25,7 @@ namespace TeamsTabAppClient.Shared
         {
             await base.OnParametersSetAsync();
 
-            var authResult = await this.Context.TeamsInterop.Authentication.GetAuthenticationResultAsync(this.Context.Context);
+            var authResult = await this.MsalService.AcquireTokenSilentAsync(loginHint: this.Context.Context.LoginHint);
             var request = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me/");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
             var response = await Client.SendAsync(request);

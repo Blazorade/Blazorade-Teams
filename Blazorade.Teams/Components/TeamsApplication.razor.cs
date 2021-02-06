@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Blazorade.Core.Components;
+using System.Diagnostics;
+using Blazorade.Msal.Security;
 
 namespace Blazorade.Teams.Components
 {
@@ -117,84 +119,123 @@ namespace Blazorade.Teams.Components
             
             if(firstRender)
             {
-                var isHostAvailable = await this.TeamsInterop.IsTeamsHostAvailableAsync();
-                if(isHostAvailable)
-                {
-                    // Now we know that the app is properly loaded, so we can set the interop module
-                    // on the application context for easy access.
-                    this.ApplicationContext.TeamsInterop = this.TeamsInterop;
-                    try
-                    {
-                        await this.InitializeAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
-                    }
-                }
-                else
-                {
-                    this.ShowHostNotAvailableTemplate = true;
-                    this.StateHasChanged();
-                }
+                await this.HandleMainProcessAsync();
             }
         }
 
+        private async Task HandleMainProcessAsync()
+        {
+            if(await this.TeamsInterop.IsTeamsHostAvailableAsync())
+            {
+                try
+                {
+                    await this.InitializeAsync();
+
+                    if (this.RequireAuthentication)
+                    {
+                        try
+                        {
+                            await this.HandleAuthenticationAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.AuthFailed);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
+                }
+
+                this.StateHasChanged();
+            }
+            else
+            {
+                this.ShowHostNotAvailableTemplate = true;
+                this.StateHasChanged();
+            }
+        }
+
+        private async Task InitLoginAsync()
+        {
+
+        }
+
+        private async Task HandleLoginResponseAsync()
+        {
+
+        }
+
         /// <summary>
-        /// Handles the main initialization of the component.
+        /// Handles application initialization.
         /// </summary>
         /// <remarks>
-        /// This should not be called if the Teams host context is not available.
+        /// This includes initializing the Teams SDK and notifying that the application was properly 
+        /// loaded. After this, other SDK functions can be used. This will also for instance remove 
+        /// the loader icon from Teams so that your application can start displaying a UI.
         /// </remarks>
         private async Task InitializeAsync()
         {
 
             //---------------------------------------------------------------------------------------
-            // The initial initialization. The notify app loaded tells Teams that the application
-            // was properly loaded, at least so far. That will remove the loader icon from Teams
-            // and reveal the UI of your application.
-            // Note, you still have to call the NotifySuccessAsync method at some point to tell
-            // Teams that the application loading has completed successfully. Otherwise Teams will
-            // show an error screen after some time.
+            // First we have to do some basic initialization. This will for instance remove the
+            // loading icon from Teams so that the application can start rendering a UI.
             await this.TeamsInterop.InitializeAsync();
             await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
             //---------------------------------------------------------------------------------------
 
-
-
             //---------------------------------------------------------------------------------------
-            // Now well get the context from Teams. When we have it, we'll store it in the
+            // Now we'll get the context from Teams. When we have it, we'll store it in the
             // application's context and call the StateHasChanged method. This will trigger
             // a rerender of the component, in case the application wants to use the context for
             // some purposes. Not all applications need authentication, you know.
             var context = await this.TeamsInterop.GetContextAsync();
             this.ApplicationContext.Context = context;
+            this.ApplicationContext.TeamsInterop = this.TeamsInterop;
             this.StateHasChanged();
             //---------------------------------------------------------------------------------------
-
-            if (this.RequireAuthentication)
-            {
-                //-----------------------------------------------------------------------------------
-                var authResult = await this.TeamsInterop.Authentication.GetAuthenticationResultAsync(context);
-                this.ApplicationContext.AuthResult = authResult;
-                await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
-
-                this.ShowApplicationTemplate = true;
-                this.StateHasChanged();
-                //-----------------------------------------------------------------------------------
-            }
-            else
-            {
-                //-----------------------------------------------------------------------------------
-                // If the application does not need authentication, we will notify Teams that the
-                // application has successfully loaded. We'll also set the flag that will instruct
-                // the UI to render the ApplicationTemplate template and call StateHasChanged to
-                // have the component do one more rendering round.
-                await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
-                this.ShowApplicationTemplate = true;
-                this.StateHasChanged();
-                //-----------------------------------------------------------------------------------
-            }
         }
+
+        private async Task HandleAuthenticationAsync()
+        {
+            AuthenticationResult token = null;
+            string loginHint = this.ApplicationContext?.Context?.LoginHint;
+
+            //---------------------------------------------------------------------------------------
+            // First we try to get the token silently, if the token is cached by MSAL.
+            try
+            {
+                token = await this.MsalService.AcquireTokenSilentAsync(loginHint: loginHint);
+            }
+            catch { }
+            //---------------------------------------------------------------------------------------
+
+            //---------------------------------------------------------------------------------------
+            // If we could not get a token silently, which typically happens only the first time
+            // the user runs the application, we try to get the token using the dialog that 
+            // Teams provides.
+            if(null == token)
+            {
+                try
+                {
+                    token = await this.TeamsInterop.Authentication.AuthenticateAsync();
+                }
+                catch { }
+            }
+            //---------------------------------------------------------------------------------------
+
+            //---------------------------------------------------------------------------------------
+            // At this point we assume that the token has been resolved, and we set it on the 
+            // application context and finish up so that the application itself can be rendered.
+            this.ApplicationContext.AuthResult = token;
+
+            await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
+
+            this.ShowApplicationTemplate = true;
+            this.StateHasChanged();
+            //---------------------------------------------------------------------------------------
+        }
+
     }
 }
