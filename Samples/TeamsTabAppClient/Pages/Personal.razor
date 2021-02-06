@@ -1,6 +1,6 @@
 ﻿@page "/personal"
 
-<TeamsApplication RequireAuthentication="true">
+<TeamsApplication RequireDefaultScopes="true">
     <ApplicationTemplate Context="ctx">
         <h2>Basic Profile Info for @ctx.AuthResult.IdTokenClaims["name"]</h2>
         <ProfileViewer Context="ctx" />

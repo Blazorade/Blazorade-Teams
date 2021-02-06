@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blazorade.Msal.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Blazorade.Teams.Configuration
         public BlazoradeTeamsOptions()
         {
             this.LoginUrl = "/login";
+            this.DefaultScopes = new BlazoradeMsalOptions().DefaultScopes;
         }
 
 
@@ -39,5 +41,12 @@ namespace Blazorade.Teams.Configuration
         /// </remarks>
         public string LoginUrl { get; set; }
 
+        /// <summary>
+        /// The default scopes to acquire if none are specified when acquiring tokens.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to the defaults specified on <see cref="BlazoradeMsalOptions.DefaultScopes"/>.
+        /// </remarks>
+        public IEnumerable<string> DefaultScopes { get; set; }
     }
 }

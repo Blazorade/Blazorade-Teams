@@ -1,4 +1,5 @@
 ﻿using Blazorade.Msal.Security;
+using Blazorade.Teams.Interop.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,24 +19,23 @@ namespace Blazorade.Teams.Components
             if (firstRender)
             {
                 await this.TeamsInterop.InitializeAsync();
-                var context = await this.TeamsInterop.GetContextAsync();
 
                 AuthenticationResult authResult = null;
 
-                if(this.NavMan.IsLoginRedirectUri())
+                try
                 {
-                    authResult = await this.MsalService.AcquireTokenInteractiveAsync(loginHint: context?.LoginHint);
+                    authResult = await this.MsalService.HandleRedirectPromiseAsync();
+                    if(null == authResult)
+                    {
+                        var key = TokenRequestInfo.CreateKey(this.Options.ClientId);
+                        var requestInfo = await this.LocalStorage.GetItemAsync<TokenRequestInfo>(key);
+                        await this.LocalStorage.RemoveItemAsync(key);
+                        await this.MsalService.AcquireTokenInteractiveAsync(loginHint: requestInfo.LoginHint, scopes: requestInfo.Scopes);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        authResult = await this.MsalService.HandleRedirectPromiseAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        await this.TeamsInterop.Authentication.NotifyFailureAsync(reason: ex.ToString());
-                    }
+                    await this.TeamsInterop.Authentication.NotifyFailureAsync(reason: ex.ToString());
                 }
 
                 if(null != authResult)
