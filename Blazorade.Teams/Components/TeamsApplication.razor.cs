@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Blazorade.Core.Components;
 using System.Diagnostics;
+using Blazorade.Msal.Security;
 
 namespace Blazorade.Teams.Components
 {
@@ -126,17 +127,7 @@ namespace Blazorade.Teams.Components
         {
             Debug.WriteLine($"HandleMainProcessAsync: {this.NavMan.Uri}");
 
-            if (this.NavMan.IsLoginRequest())
-            {
-                Debug.WriteLine("IsLoginRequest");
-                await this.InitLoginAsync();
-            }
-            else if(this.NavMan.IsLoginResponse())
-            {
-                Debug.WriteLine("IsLoginResponse");
-                await this.HandleLoginResponseAsync();
-            }
-            else if(await this.TeamsInterop.IsTeamsHostAvailableAsync())
+            if(await this.TeamsInterop.IsTeamsHostAvailableAsync())
             {
                 Debug.WriteLine("Main app initialization");
                 try
@@ -172,7 +163,7 @@ namespace Blazorade.Teams.Components
 
         private async Task InitLoginAsync()
         {
-            await this.TeamsInterop.MsalLoginRedirectAsync(this.NavMan.GetLoginHint(), this.NavMan.GetLoginState());
+
         }
 
         private async Task HandleLoginResponseAsync()
@@ -212,9 +203,16 @@ namespace Blazorade.Teams.Components
 
         private async Task HandleAuthenticationAsync()
         {
+            AuthenticationResult token = null;
+            string loginHint = this.ApplicationContext?.Context?.LoginHint;
+
             //---------------------------------------------------------------------------------------
-            // First we try to get the token silently, if the token is cached my MSAL.
-            var token = await this.TeamsInterop.AcquireTokenSilentAsync();
+            // First we try to get the token silently, if the token is cached by MSAL.
+            try
+            {
+                token = await this.MsalService.AcquireTokenSilentAsync(loginHint: loginHint);
+            }
+            catch { }
             //---------------------------------------------------------------------------------------
 
             //---------------------------------------------------------------------------------------
@@ -223,7 +221,11 @@ namespace Blazorade.Teams.Components
             // Teams provides.
             if(null == token)
             {
-                token = await this.TeamsInterop.AcquireTokenPopupAsync();
+                try
+                {
+                    token = await this.TeamsInterop.Authentication.AuthenticateAsync();
+                }
+                catch { }
             }
             //---------------------------------------------------------------------------------------
 

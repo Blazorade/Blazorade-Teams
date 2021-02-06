@@ -20,7 +20,7 @@ namespace Blazorade.Teams.Interop
         /// </summary>
         /// <param name="appOptions"></param>
         /// <param name="jsRuntime"></param>
-        protected InteropModuleBase(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime)
+        protected InteropModuleBase(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime)
         {
             this.ApplicationSettings = appOptions ?? throw new ArgumentNullException(nameof(appOptions));
             this.JSRuntime = jsRuntime ?? throw new ArgumentNullException(nameof(jsRuntime));
@@ -34,7 +34,7 @@ namespace Blazorade.Teams.Interop
         /// <summary>
         /// The application settings configured on the application.
         /// </summary>
-        protected AzureAdApplicationOptions ApplicationSettings { get; private set; }
+        protected BlazoradeTeamsOptions ApplicationSettings { get; private set; }
 
 
         private IJSObjectReference _BlazoradeTeamsJSModule;
@@ -49,7 +49,6 @@ namespace Blazorade.Teams.Interop
                 //-------------------------------------------------------------------------
                 // First import the JS modules that blazoradeTeams.js is dependent upon.
                 var teamsModule = await this.GetTeamsSdkModuleAsync();
-                var msalModule = await this.GetMsalModuleAsync();
                 //-------------------------------------------------------------------------
 
                 _BlazoradeTeamsJSModule = await this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazorade.Teams/js/blazoradeTeams.js").AsTask();
@@ -59,12 +58,6 @@ namespace Blazorade.Teams.Interop
         }
 
 
-
-        private Task<IJSObjectReference> _MsalModule;
-        private Task<IJSObjectReference> GetMsalModuleAsync()
-        {
-            return _MsalModule ??= this.JSRuntime.InvokeAsync<IJSObjectReference>("import", "https://alcdn.msftauth.net/browser/2.8.0/js/msal-browser.min.js").AsTask();
-        }
 
         private Task<IJSObjectReference> _TeamsSdkModule;
         private Task<IJSObjectReference> GetTeamsSdkModuleAsync()

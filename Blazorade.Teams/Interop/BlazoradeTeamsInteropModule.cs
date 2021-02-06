@@ -24,7 +24,7 @@ namespace Blazorade.Teams.Interop
         /// This class should not be initialized in code. It will be created automatically through Dependency Injection
         /// and provided through the <see cref="TeamsApplication.TeamsInterop"/> property.
         /// </remarks>
-        public BlazoradeTeamsInteropModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule, AuthenticationModule authModule) : base(appOptions, jsRuntime)
+        public BlazoradeTeamsInteropModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime, ApplicationInitializationModule appInitModule, SettingsModule settingsModule, AuthenticationModule authModule) : base(appOptions, jsRuntime)
         {
             this.Authentication = authModule ?? throw new ArgumentNullException(nameof(authModule));
             this.AppInitialization = appInitModule ?? throw new ArgumentNullException(nameof(appInitModule));
@@ -46,47 +46,6 @@ namespace Blazorade.Teams.Interop
         /// </summary>
         public SettingsModule Settings { get; protected set; }
 
-
-
-        /// <summary>
-        /// Acquires an access token for the currently logged on user using the application configuration.
-        /// </summary>
-        /// <remarks>
-        /// This method first tries to acquire the token silently. If that fails, then the Teams authentication
-        /// dialog is used.
-        /// </remarks>
-        public async Task<AuthenticationResult> AcquireTokenAsync()
-        {
-            //var data = await this.GetMsalDataAsync();
-
-            //var module = await this.GetBlazoradeTeamsJSModuleAsync();
-            //var handler = new DotNetInstanceCallbackHandler<AuthenticationResult>(module, "acquireToken", data);
-            //return await handler.GetResultAsync();
-            return null;
-        }
-
-        /// <summary>
-        /// Returns the access token for the application silently, meaning no user interaction is required.
-        /// </summary>
-        /// <remarks>
-        /// This requires that the token is cached by MSAL from a previous token request.
-        /// </remarks>
-        /// <returns>Returns the access token or <c>null</c> if it was not available.</returns>
-        public async Task<AuthenticationResult> AcquireTokenSilentAsync()
-        {
-            var data = await this.GetMsalDataAsync();
-            var module = await this.GetBlazoradeTeamsJSModuleAsync();
-            var handler = new DotNetInstanceCallbackHandler<AuthenticationResult>(module, "msal_acquireTokenSilent", data);
-            return await handler.GetResultAsync();
-        }
-
-        public async Task<AuthenticationResult> AcquireTokenPopupAsync()
-        {
-            var data = await this.GetMsalDataAsync();
-            var module = await this.GetBlazoradeTeamsJSModuleAsync();
-            var handler = new DotNetInstanceCallbackHandler<AuthenticationResult>(module, "acquireTokenPopup", data);
-            return await handler.GetResultAsync();
-        }
 
 
         /// <summary>
@@ -133,25 +92,5 @@ namespace Blazorade.Teams.Interop
             return await module.InvokeAsync<bool>("isTeamsHostAvailable");
         }
 
-
-        internal async Task MsalLoginRedirectAsync(string loginHint, string state)
-        {
-            var module = await this.GetBlazoradeTeamsJSModuleAsync();
-            var data = new Dictionary<string, object>();
-            data["msalConfig"] = new MsalConfig(this.ApplicationSettings);
-            data["loginHint"] = loginHint;
-            data["state"] = state;
-
-            var result = await module.InvokeAsync<bool>("msal_loginRedirect", data);
-        }
-
-        private async Task<Dictionary<string, object>> GetMsalDataAsync()
-        {
-            return new Dictionary<string, object>()
-            {
-                { "context", await this.GetContextAsync() },
-                { "msalConfig", new MsalConfig(this.ApplicationSettings) }
-            };
-        }
     }
 }

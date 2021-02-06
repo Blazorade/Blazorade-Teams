@@ -37,21 +37,17 @@ namespace TeamsTabAppServer.Shared
 
         protected async override Task OnParametersSetAsync()
         {
-            var token = await this.Context.TeamsInterop.AcquireTokenAsync();
-            if(null != token)
-            {
-                var authProvider = new AuthenticationProvider(this.Context);
-                GraphServiceClient client = new GraphServiceClient(authProvider);
-                var me = await client.Me.Request().GetAsync();
+            var authProvider = new AuthenticationProvider(this.Context, this.MsalService);
+            GraphServiceClient client = new GraphServiceClient(authProvider);
+            var me = await client.Me.Request().GetAsync();
 
-                this.DisplayName = me.DisplayName;
-                this.FirstName = me.GivenName;
-                this.LastName = me.Surname;
-                this.JobTitle = me.JobTitle;
-                this.Email = me.Mail;
-                this.MobilePhone = me.MobilePhone;
-                this.Upn = me.UserPrincipalName;
-            }
+            this.DisplayName = me.DisplayName;
+            this.FirstName = me.GivenName;
+            this.LastName = me.Surname;
+            this.JobTitle = me.JobTitle;
+            this.Email = me.Mail;
+            this.MobilePhone = me.MobilePhone;
+            this.Upn = me.UserPrincipalName;
 
             await base.OnParametersSetAsync();
         }

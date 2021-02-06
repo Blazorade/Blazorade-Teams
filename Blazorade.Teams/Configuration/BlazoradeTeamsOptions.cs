@@ -9,13 +9,14 @@ namespace Blazorade.Teams.Configuration
     /// <summary>
     /// Options for configuring your application for authentication.
     /// </summary>
-    public class AzureAdApplicationOptions
+    public class BlazoradeTeamsOptions
     {
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public AzureAdApplicationOptions()
+        public BlazoradeTeamsOptions()
         {
+            this.LoginUrl = "/login";
         }
 
 
@@ -29,6 +30,14 @@ namespace Blazorade.Teams.Configuration
         /// application specified in <see cref="ClientId"/> is registered in.
         /// </summary>
         public string TenantId { get; set; }
+
+        /// <summary>
+        /// The relative URL to the login page.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to <c>/login</c>.
+        /// </remarks>
+        public string LoginUrl { get; set; }
 
     }
 }

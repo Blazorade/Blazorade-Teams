@@ -25,7 +25,7 @@ namespace Blazorade.Teams.Interop
         /// <summary>
         /// Creates a new instance.
         /// </summary>
-        public SettingsModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
+        public SettingsModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
 
 
         /// <summary>

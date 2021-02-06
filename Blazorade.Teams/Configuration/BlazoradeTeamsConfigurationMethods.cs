@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// By convention, the Add{Group} methods should be placed in the namespace below.
+// https://docs.microsoft.com/aspnet/core/fundamentals/dependency-injection#register-groups-of-services-with-extension-methods
+
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Extension methods for working with Dependency Injection in Blazorade Teams.
     /// </summary>
-    public static class BlazoradeTeamsServiceCollectionExtensionMethods
+    public static class BlazoradeTeamsConfigurationMethods
     {
 
         /// <summary>
@@ -31,11 +34,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<AuthenticationModule>()
                 .AddBlazoradeMsal((sp, config) =>
                 {
-                    var options = sp.GetService<AzureAdApplicationOptions>();
+                    var options = sp.GetService<BlazoradeTeamsOptions>();
 
                     config.ClientId = options.ClientId;
                     config.TenantId = options.TenantId;
+                    config.RedirectUrl = options.LoginUrl;
+
+                    // We need to use the authentication dialog provided by Teams, in which we will perform a redirect authentication.
                     config.InteractiveLoginMode = InteractiveLoginMode.Redirect;
+
+                    // Because we need to share the tokens from the authentication dialog with the main application.
+                    config.TokenCacheScope = TokenCacheScope.Persistent; 
                 })
                 ;
         }
@@ -44,12 +53,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds services needed by Blazorade Teams and allows you to specify the application configuration required
         /// in order to perform user authentication.
         /// </summary>
-        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<AzureAdApplicationOptions> config)
+        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<BlazoradeTeamsOptions> config)
         {
             return services
                 .AddSingleton((p) =>
                 {
-                    var options = new AzureAdApplicationOptions();
+                    var options = new BlazoradeTeamsOptions();
                     config?.Invoke(options);
                     return options;
                 })
@@ -60,12 +69,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
         /// using other services configured in the application.
         /// </summary>
-        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<IServiceProvider, AzureAdApplicationOptions> config)
+        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<IServiceProvider, BlazoradeTeamsOptions> config)
         {
             return services
                 .AddSingleton((p) =>
                 {
-                    var options = new AzureAdApplicationOptions();
+                    var options = new BlazoradeTeamsOptions();
                     config?.Invoke(p, options);
                     return options;
                 })

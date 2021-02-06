@@ -1,81 +1,4 @@
 ﻿
-export function acquireToken(args) {
-    console.debug("acquireToken", args);
-    let msalClient = createMsalClient(args);
-    let request = createMsalTokenRequest(msalClient, args);
-
-    console.debug("acquireToken", "request", request);
-
-    msalClient.acquireTokenSilent(request)
-        .then(result => {
-            console.debug("acquireTokenSilent.succeeded", result);
-            invokeCallback(args.successCallback, result);
-        })
-        .catch(err => {
-            console.warn("acquireTokenSilent.failed", "must fallback to using dialog.", err);
-            launchAuthDialog(args);
-        })
-        ;
-
-}
-
-export function acquireTokenPopup(args) {
-    launchAuthDialog(args);
-}
-
-export function msal_acquireTokenSilent(args) {
-    console.debug("msal_acquireTokenSilent", args);
-    let msalClient = createMsalClient(args);
-    let request = createMsTokenRequest(msalClient, args);
-
-    console.debug("msal_acquireTokenSilent", "request", request);
-
-    msalClient.acquireTokenSilent(request)
-        .then(result => {
-            console.debug("msal_acquireTokenSilent", "result", result);
-            invokeCallback(args.successCallback, result);
-        })
-        .catch(err => {
-            console.warn("msal_acquireTokenSilent", err);
-            invokeCallback(args.successCallback, null);
-        })
-        ;
-}
-
-export function msal_loginRedirect(args, msalConfig, loginHint, state) {
-    console.debug("msal_loginRedirect", args);
-
-    setMsalConfigDefault(args.msalConfig);
-    let msalClient = new msal.PublicClientApplication(args.msalConfig);
-
-    let request = {
-        scopes: [".default"],
-        authority: args.msalConfig.auth.authority,
-        loginHint: args.loginHint,
-        redirectUri: window.location.origin,
-        state: args.state
-    };
-
-    console.debug("msal_loginRedirect", "request", request);
-
-    msalClient.loginRedirect(request)
-        .then(result => {
-            console.debug("msal_loginRedirect.succeeded", result);
-        })
-        .catch(err => {
-            console.error("msal_loginRedirect.failed", err);
-
-            microsoftTeams.initialize(() => {
-                microsoftTeams.authentication.notifyFailure(err);
-            })
-        })
-        ;
-
-    return true;
-}
-
-
-
 export function initialize(args) {
     console.debug("initialize");
 
@@ -101,9 +24,20 @@ export function isTeamsHostAvailable() {
 
 
 
-export function authentication_authenticate(authParams) {
-    console.debug("authentication_authenticate", authParams);
-    microsoftTeams.authentication.authenticate(authParams);
+export function authentication_authenticate(args) {
+    console.debug("authentication_authenticate", args);
+
+    microsoftTeams.authentication.authenticate({
+        url: args.data.url,
+        successCallback: function (result) {
+            console.debug("authentication_authenticate", "success", result);
+            invokeCallback(args.successCallback, result);
+        },
+        failureCallback: function (reason) {
+            console.error("authentication_authenticate", "failure", reason);
+            invokeCallback(args.failureCallback, reason);
+        }
+    });
 }
 
 export function authentication_notifySuccess(result, callbackUrl) {
@@ -222,58 +156,4 @@ export function invokeCallback(callback, ...args) {
     else {
         console.error("invokeCallbck", "Given callback cannot be used for invoking a callback.", callback, args);
     }
-}
-
-
-
-function createMsalClient(args) {
-    setMsalConfigDefault(args.data.msalConfig);
-
-    let msalClient = new msal.PublicClientApplication(args.data.msalConfig);
-
-    console.debug("createMsalClient", args, msalClient);
-
-    return msalClient;
-}
-
-function createMsalTokenRequest(msalClient, args) {
-    console.debug("createMsalTokenRequest", msalClient, args);
-
-    let homeId = args.data.context.userObjectId + "." + args.data.context.tid;
-    let account = msalClient.getAccountByHomeId(homeId);
-
-    console.debug("createMsalTokenRequest", "homeId", homeId);
-    console.debug("createMsalTokenRequest", "account", account);
-
-    return {
-        scopes: [".default"],
-        account: account
-    };
-}
-
-function launchAuthDialog(args) {
-    console.debug("launchAuthDialog", args);
-
-    microsoftTeams.initialize(() => {
-        microsoftTeams.authentication.authenticate({
-            url: window.location.origin + "?" + args.data.context.userPrincipalName + "#blazorade-login-request",
-            successCallback: result => {
-                console.debug("launchAuthDialog.succeeded", result);
-                invokeCallback(args.successCallback, result);
-            },
-            failureCallback: err => {
-                console.error("launchAuthDialog.failed", err);
-                invokeCallback(args.successCallback, null);
-            }
-        });
-    });
-}
-
-function setMsalConfigDefault(msalConfig) {
-    console.debug("setMsalConfigDefault", msalConfig);
-
-    msalConfig.auth.redirectUri = window.location.origin;
-    msalConfig.cache = {
-        cacheLocation: "localStorage"
-    };
 }

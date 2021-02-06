@@ -1,10 +1,14 @@
 ﻿using Blazorade.Core.Interop;
+using Blazorade.Msal.Security;
+using Blazorade.Msal.Services;
 using Blazorade.Teams.Configuration;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Blazorade.Teams.Interop
@@ -15,9 +19,51 @@ namespace Blazorade.Teams.Interop
     public class AuthenticationModule : InteropModuleBase
     {
         /// <inheritdoc/>
-        public AuthenticationModule(AzureAdApplicationOptions appOptions, IJSRuntime jsRuntime) : base(appOptions, jsRuntime) { }
+        public AuthenticationModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime, NavigationManager navMan, BlazoradeMsalService msalService) : base(appOptions, jsRuntime)
+        {
+            this.NavMan = navMan ?? throw new ArgumentNullException(nameof(navMan));
+            this.MsalService = msalService ?? throw new ArgumentNullException(nameof(msalService));
+        }
 
 
+        private readonly BlazoradeMsalService MsalService;
+        private readonly NavigationManager NavMan;
+
+        public async Task<AuthenticationResult> AuthenticateAsync()
+        {
+            var module = await this.GetBlazoradeTeamsJSModuleAsync();
+            var data = new Dictionary<string, object>
+            {
+                { "url", this.NavMan.CreateLoginRedirectUri(this.ApplicationSettings) }
+            };
+
+            string result = null;
+            AuthenticationResult token = null;
+            using (var handler = new DotNetInstanceCallbackHandler<string>(module, "authentication_authenticate", data))
+            {
+                result = await handler.GetResultAsync();
+            }
+
+            if(result?.Length > 0)
+            {
+                try
+                {
+                    token = JsonSerializer.Deserialize<AuthenticationResult>(result);
+                }
+                catch { }
+            }
+
+            if(null == token)
+            {
+                try
+                {
+                    token = await this.MsalService.AcquireTokenSilentAsync(fallbackToDefaultLoginHint: true);
+                }
+                catch { }
+            }
+
+            return token;
+        }
 
         /// <summary>
         /// Notifies the frame that initiated this authentication request that the request failed. This function is
@@ -47,5 +93,6 @@ namespace Blazorade.Teams.Interop
             var module = await this.GetBlazoradeTeamsJSModuleAsync();
             await module.InvokeVoidAsync("authentication_notifySuccess", result, callbackUrl);
         }
+
     }
 }

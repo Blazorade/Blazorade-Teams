@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Model;
+﻿using Blazorade.Msal.Services;
+using Blazorade.Teams.Model;
 using Microsoft.Graph;
 using System;
 using System.Net.Http;
@@ -9,17 +10,18 @@ namespace TeamsTabAppServer
 {
     internal class AuthenticationProvider : IAuthenticationProvider
     {
-        public AuthenticationProvider(ApplicationContext context)
+        public AuthenticationProvider(ApplicationContext context, BlazoradeMsalService msalService)
         {
-            this.Context = context
-                    ?? throw new ArgumentNullException(nameof(context));
+            this.Context = context ?? throw new ArgumentNullException(nameof(context));
+            this.MsalService = msalService ?? throw new ArgumentNullException(nameof(msalService));
         }
 
-        private ApplicationContext Context;
+        private readonly ApplicationContext Context;
+        private readonly BlazoradeMsalService MsalService;
 
         public async Task AuthenticateRequestAsync(HttpRequestMessage request)
         {
-            var authResult = await this.Context.TeamsInterop.AcquireTokenAsync();
+            var authResult = await this.MsalService.AcquireTokenSilentAsync(loginHint: this.Context?.Context?.LoginHint, fallbackToDefaultLoginHint: true);
             if (null != authResult)
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);

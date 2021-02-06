@@ -1,5 +1,10 @@
-﻿<h3>LoginDialogHandler</h3>
+﻿@inherits BlazoradeComponentBase
 
-@code {
+@inject BlazoradeMsalService MsalService
+@inject BlazoradeTeamsInteropModule TeamsInterop
+@inject NavigationManager NavMan
 
+@if(null != this.ChildContent)
+{
+    @this.ChildContent
 }

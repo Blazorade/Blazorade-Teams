@@ -98,33 +98,41 @@
             the loader icon from Teams so that your application can start displaying a UI.
             </remarks>
         </member>
-        <member name="T:Blazorade.Teams.Configuration.AzureAdApplicationOptions">
+        <member name="T:Blazorade.Teams.Configuration.BlazoradeTeamsOptions">
             <summary>
             Options for configuring your application for authentication.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Configuration.AzureAdApplicationOptions.#ctor">
+        <member name="M:Blazorade.Teams.Configuration.BlazoradeTeamsOptions.#ctor">
             <summary>
             Creates a new instance.
             </summary>
         </member>
-        <member name="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.ClientId">
+        <member name="P:Blazorade.Teams.Configuration.BlazoradeTeamsOptions.ClientId">
             <summary>
             The application (client) ID of your Azure AD application.
             </summary>
         </member>
-        <member name="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.TenantId">
+        <member name="P:Blazorade.Teams.Configuration.BlazoradeTeamsOptions.TenantId">
             <summary>
             The tenant ID or tenant name ({tenant}.onmicrosoft.com) of the tenant your
-            application specified in <see cref="P:Blazorade.Teams.Configuration.AzureAdApplicationOptions.ClientId"/> is registered in.
+            application specified in <see cref="P:Blazorade.Teams.Configuration.BlazoradeTeamsOptions.ClientId"/> is registered in.
             </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Configuration.BlazoradeTeamsOptions.LoginUrl">
+            <summary>
+            The relative URL to the login page.
+            </summary>
+            <remarks>
+            Defaults to <c>/login</c>.
+            </remarks>
         </member>
         <member name="T:Blazorade.Teams.Interop.AuthenticationModule">
             <summary>
             Represents the authentication module in the Teams SDK.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime,Microsoft.AspNetCore.Components.NavigationManager,Blazorade.Msal.Services.BlazoradeMsalService)">
             <inheritdoc/>
         </member>
         <member name="M:Blazorade.Teams.Interop.AuthenticationModule.NotifyFailureAsync(System.String,System.String)">
@@ -153,7 +161,7 @@
             The root module for facilitating communications with the Teams JavaScript SDK.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Interop.ApplicationInitializationModule,Blazorade.Teams.Interop.SettingsModule,Blazorade.Teams.Interop.AuthenticationModule)">
+        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime,Blazorade.Teams.Interop.ApplicationInitializationModule,Blazorade.Teams.Interop.SettingsModule,Blazorade.Teams.Interop.AuthenticationModule)">
             <summary>
             Creates a new instance of the module class.
             </summary>
@@ -176,24 +184,6 @@
             <summary>
             A module that represents the <c>settings</c> module in the Teams SDK.
             </summary>
-        </member>
-        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.AcquireTokenAsync">
-            <summary>
-            Acquires an access token for the currently logged on user using the application configuration.
-            </summary>
-            <remarks>
-            This method first tries to acquire the token silently. If that fails, then the Teams authentication
-            dialog is used.
-            </remarks>
-        </member>
-        <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.AcquireTokenSilentAsync">
-            <summary>
-            Returns the access token for the application silently, meaning no user interaction is required.
-            </summary>
-            <remarks>
-            This requires that the token is cached by MSAL from a previous token request.
-            </remarks>
-            <returns>Returns the access token or <c>null</c> if it was not available.</returns>
         </member>
         <member name="M:Blazorade.Teams.Interop.BlazoradeTeamsInteropModule.GetContextAsync">
             <summary>
@@ -465,7 +455,7 @@
             Base class implementation for interop modules.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.InteropModuleBase.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+        <member name="M:Blazorade.Teams.Interop.InteropModuleBase.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime)">
             <summary>
             Creates a new instance of the class.
             </summary>
@@ -540,7 +530,7 @@
             </para>
             </remarks>
         </member>
-        <member name="M:Blazorade.Teams.Interop.SettingsModule.#ctor(Blazorade.Teams.Configuration.AzureAdApplicationOptions,Microsoft.JSInterop.IJSRuntime)">
+        <member name="M:Blazorade.Teams.Interop.SettingsModule.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime)">
             <summary>
             Creates a new instance.
             </summary>
@@ -596,12 +586,12 @@
             </summary>
             <param name="validityState">Set to <c>true</c> if settings are valid and saving them is allowed.</param>
         </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods">
+        <member name="T:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsConfigurationMethods">
             <summary>
             Extension methods for working with Dependency Injection in Blazorade Teams.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsConfigurationMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Adds the necessary services required by Blazorade Teams.
             </summary>
@@ -610,13 +600,13 @@
             other overloaded methods to specify the needed information.
             </remarks>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Blazorade.Teams.Configuration.AzureAdApplicationOptions})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsConfigurationMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Blazorade.Teams.Configuration.BlazoradeTeamsOptions})">
             <summary>
             Adds services needed by Blazorade Teams and allows you to specify the application configuration required
             in order to perform user authentication.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsServiceCollectionExtensionMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Blazorade.Teams.Configuration.AzureAdApplicationOptions})">
+        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsConfigurationMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Blazorade.Teams.Configuration.BlazoradeTeamsOptions})">
             <summary>
             Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
             using other services configured in the application.
