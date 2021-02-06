@@ -1,0 +1,10 @@
+﻿@page "/myinfo"
+
+<TeamsApplication RequireScopes="User.Read">
+    <ApplicationTemplate>
+        <UserInfoView Context="context" />
+    </ApplicationTemplate>
+    <LoadingTemplate>
+        <p>Loading...</p>
+    </LoadingTemplate>
+</TeamsApplication>

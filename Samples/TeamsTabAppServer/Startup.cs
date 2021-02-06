@@ -30,6 +30,8 @@ namespace TeamsTabAppServer
                     c.TenantId = config.GetValue<string>("tenantId");
 
                     c.LoginUrl = "/login";
+
+                    c.DefaultScopes = new string[] { "User.Read" };
                 });
         }
 

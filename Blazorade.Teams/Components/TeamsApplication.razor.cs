@@ -47,10 +47,18 @@ namespace Blazorade.Teams.Components
     {
 
         /// <summary>
-        /// Set to <c>true</c> to have the component take care of authenticating the user.
+        /// Specifies whether to perform authentication and acquire an access token with the default scopes
+        /// configured during application startup.
         /// </summary>
         [Parameter]
-        public bool RequireAuthentication { get; set; }
+        public bool RequireDefaultScopes { get; set; }
+
+        /// <summary>
+        /// A comma-separated list of scopes to acquire a token for. If <see cref="RequireDefaultScopes"/> is set
+        /// to <c>true</c>, then the scopes acquired are combined with the default scopes.
+        /// </summary>
+        [Parameter]
+        public string RequireScopes { get; set; }
 
         /// <summary>
         /// The main template for your application.
@@ -131,7 +139,7 @@ namespace Blazorade.Teams.Components
                 {
                     await this.InitializeAsync();
 
-                    if (this.RequireAuthentication)
+                    if (this.RequireDefaultScopes || this.RequireScopes?.Length > 0)
                     {
                         try
                         {
@@ -155,16 +163,6 @@ namespace Blazorade.Teams.Components
                 this.ShowHostNotAvailableTemplate = true;
                 this.StateHasChanged();
             }
-        }
-
-        private async Task InitLoginAsync()
-        {
-
-        }
-
-        private async Task HandleLoginResponseAsync()
-        {
-
         }
 
         /// <summary>
@@ -200,13 +198,26 @@ namespace Blazorade.Teams.Components
         private async Task HandleAuthenticationAsync()
         {
             AuthenticationResult token = null;
+
+            var arr = (this.RequireScopes ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var scopes = new List<string>(from x in arr select x.Trim());
+            if (this.RequireDefaultScopes)
+            {
+                foreach(var scope in this.AppOptions.DefaultScopes ?? new string[0])
+                {
+                    if(null == scopes.FirstOrDefault(x => x.ToLower() == scope?.ToLower()))
+                    {
+                        scopes.Add(scope);
+                    }
+                }
+            }
             string loginHint = this.ApplicationContext?.Context?.LoginHint;
 
             //---------------------------------------------------------------------------------------
             // First we try to get the token silently, if the token is cached by MSAL.
             try
             {
-                token = await this.MsalService.AcquireTokenSilentAsync(loginHint: loginHint);
+                token = await this.MsalService.AcquireTokenSilentAsync(loginHint: loginHint, scopes: scopes);
             }
             catch { }
             //---------------------------------------------------------------------------------------
@@ -219,7 +230,7 @@ namespace Blazorade.Teams.Components
             {
                 try
                 {
-                    token = await this.TeamsInterop.Authentication.AuthenticateAsync();
+                    token = await this.TeamsInterop.Authentication.AuthenticateAsync(scopes: scopes);
                 }
                 catch { }
             }

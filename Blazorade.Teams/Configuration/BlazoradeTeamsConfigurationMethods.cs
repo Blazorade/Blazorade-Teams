@@ -1,6 +1,7 @@
 ﻿using Blazorade.Msal.Configuration;
 using Blazorade.Teams.Configuration;
 using Blazorade.Teams.Interop;
+using Blazorade.Teams.Interop.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<ApplicationInitializationModule>()
                 .AddScoped<SettingsModule>()
                 .AddScoped<AuthenticationModule>()
+                .AddScoped<LocalStorageService>()
                 .AddBlazoradeMsal((sp, config) =>
                 {
                     var options = sp.GetService<BlazoradeTeamsOptions>();
@@ -39,6 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     config.ClientId = options.ClientId;
                     config.TenantId = options.TenantId;
                     config.RedirectUrl = options.LoginUrl;
+                    config.DefaultScopes = options.DefaultScopes ?? config.DefaultScopes;
 
                     // We need to use the authentication dialog provided by Teams, in which we will perform a redirect authentication.
                     config.InteractiveLoginMode = InteractiveLoginMode.Redirect;

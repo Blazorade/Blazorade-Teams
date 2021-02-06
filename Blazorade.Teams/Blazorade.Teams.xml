@@ -36,9 +36,16 @@
             </code>
             </example>
         </member>
-        <member name="P:Blazorade.Teams.Components.TeamsApplication.RequireAuthentication">
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.RequireDefaultScopes">
             <summary>
-            Set to <c>true</c> to have the component take care of authenticating the user.
+            Specifies whether to perform authentication and acquire an access token with the default scopes
+            configured during application startup.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.RequireScopes">
+            <summary>
+            A comma-separated list of scopes to acquire a token for. If <see cref="P:Blazorade.Teams.Components.TeamsApplication.RequireDefaultScopes"/> is set
+            to <c>true</c>, then the scopes acquired are combined with the default scopes.
             </summary>
         </member>
         <member name="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate">
@@ -127,12 +134,20 @@
             Defaults to <c>/login</c>.
             </remarks>
         </member>
+        <member name="P:Blazorade.Teams.Configuration.BlazoradeTeamsOptions.DefaultScopes">
+            <summary>
+            The default scopes to acquire if none are specified when acquiring tokens.
+            </summary>
+            <remarks>
+            Defaults to the defaults specified on <see cref="P:Blazorade.Msal.Configuration.BlazoradeMsalOptions.DefaultScopes"/>.
+            </remarks>
+        </member>
         <member name="T:Blazorade.Teams.Interop.AuthenticationModule">
             <summary>
             Represents the authentication module in the Teams SDK.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime,Microsoft.AspNetCore.Components.NavigationManager,Blazorade.Msal.Services.BlazoradeMsalService)">
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime,Microsoft.AspNetCore.Components.NavigationManager,Blazorade.Msal.Services.BlazoradeMsalService,Blazorade.Teams.Interop.Internal.LocalStorageService)">
             <inheritdoc/>
         </member>
         <member name="M:Blazorade.Teams.Interop.AuthenticationModule.NotifyFailureAsync(System.String,System.String)">

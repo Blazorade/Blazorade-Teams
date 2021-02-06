@@ -2,6 +2,7 @@
 using Blazorade.Msal.Security;
 using Blazorade.Msal.Services;
 using Blazorade.Teams.Configuration;
+using Blazorade.Teams.Interop.Internal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System;
@@ -19,22 +20,34 @@ namespace Blazorade.Teams.Interop
     public class AuthenticationModule : InteropModuleBase
     {
         /// <inheritdoc/>
-        public AuthenticationModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime, NavigationManager navMan, BlazoradeMsalService msalService) : base(appOptions, jsRuntime)
+        public AuthenticationModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime, NavigationManager navMan, BlazoradeMsalService msalService, LocalStorageService localStorage) : base(appOptions, jsRuntime)
         {
             this.NavMan = navMan ?? throw new ArgumentNullException(nameof(navMan));
             this.MsalService = msalService ?? throw new ArgumentNullException(nameof(msalService));
+            this.LocalStorage = localStorage ?? throw new ArgumentNullException(nameof(localStorage));
         }
 
 
         private readonly BlazoradeMsalService MsalService;
         private readonly NavigationManager NavMan;
+        private readonly LocalStorageService LocalStorage;
 
-        public async Task<AuthenticationResult> AuthenticateAsync()
+        public async Task<AuthenticationResult> AuthenticateAsync(IEnumerable<string> scopes = null)
         {
+            scopes = scopes ?? this.ApplicationSettings.DefaultScopes;
             var module = await this.GetBlazoradeTeamsJSModuleAsync();
+
+            var context = await new DotNetInstanceCallbackHandler<Context>(module, "getContext").GetResultAsync();
+            var requestInfo = new TokenRequestInfo
+            {
+                LoginHint = context.LoginHint,
+                Scopes = new List<string>(scopes)
+            };
+            await this.LocalStorage.SetItemAsync(TokenRequestInfo.CreateKey(this.ApplicationSettings.ClientId), requestInfo);
+
             var data = new Dictionary<string, object>
             {
-                { "url", this.NavMan.CreateLoginRedirectUri(this.ApplicationSettings) }
+                { "url", this.NavMan.ToAbsoluteUri(this.ApplicationSettings.LoginUrl) }
             };
 
             string result = null;

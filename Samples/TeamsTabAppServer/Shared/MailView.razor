@@ -1,0 +1,14 @@
+﻿@inherits BlazoradeComponentBase
+@inject BlazoradeMsalService MsalService
+
+<h3>Mail</h3>
+
+@if(this.Messages?.Count() > 0)
+{
+    <ul>
+        @foreach(var msg in this.Messages)
+        {
+            <li>@msg.ReceivedDateTime | @msg.Sender.EmailAddress.Name (<a href="mailto:@msg.Sender.EmailAddress.Address">@msg.Sender.EmailAddress.Address</a>) | @msg.Subject</li>
+        }
+    </ul>
+}
