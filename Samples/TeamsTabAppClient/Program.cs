@@ -21,9 +21,11 @@ namespace TeamsTabAppClient
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
                 .AddBlazoradeTeams((sp, config) =>
                 {
-                    var appConfig = sp.GetService<IConfiguration>().GetSection("teamsApp");
-                    config.ClientId = appConfig.GetValue<string>("clientId");
-                    config.TenantId = appConfig.GetValue<string>("tenantId");
+                    var configService = sp.GetService<IConfiguration>();
+                    config.ClientId = configService.GetValue<string>("clientId");
+                    config.TenantId = configService.GetValue<string>("tenantId");
+
+                    config.LoginUrl = "/login";
                 })
                 ;
 

@@ -125,11 +125,8 @@ namespace Blazorade.Teams.Components
 
         private async Task HandleMainProcessAsync()
         {
-            Debug.WriteLine($"HandleMainProcessAsync: {this.NavMan.Uri}");
-
             if(await this.TeamsInterop.IsTeamsHostAvailableAsync())
             {
-                Debug.WriteLine("Main app initialization");
                 try
                 {
                     await this.InitializeAsync();
@@ -155,7 +152,6 @@ namespace Blazorade.Teams.Components
             }
             else
             {
-                Debug.WriteLine("Teams host not available.");
                 this.ShowHostNotAvailableTemplate = true;
                 this.StateHasChanged();
             }
