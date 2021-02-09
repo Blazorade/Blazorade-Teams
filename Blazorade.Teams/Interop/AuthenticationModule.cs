@@ -32,15 +32,36 @@ namespace Blazorade.Teams.Interop
         private readonly NavigationManager NavMan;
         private readonly LocalStorageService LocalStorage;
 
-        public async Task<AuthenticationResult> AuthenticateAsync(IEnumerable<string> scopes = null)
+        public async Task<AuthenticationResult> AcquireTokenAsync(string loginHint = null, IEnumerable<string> scopes = null)
+        {
+            AuthenticationResult token = null;
+
+            if(null == scopes)
+            {
+                scopes = this.GetScopes();
+            }
+            try
+            {
+                token = await this.MsalService.AcquireTokenSilentAsync(loginHint: loginHint, scopes: scopes);
+            }
+            catch { }
+
+            if(null == token)
+            {
+                token = await this.AuthenticateAsync(loginHint: loginHint, scopes: scopes);
+            }
+
+            return token;
+        }
+
+        public async Task<AuthenticationResult> AuthenticateAsync(string loginHint = null, IEnumerable<string> scopes = null)
         {
             scopes = scopes ?? this.ApplicationSettings.DefaultScopes;
             var module = await this.GetBlazoradeTeamsJSModuleAsync();
 
-            var context = await new DotNetInstanceCallbackHandler<Context>(module, "getContext").GetResultAsync();
             var requestInfo = new TokenRequestInfo
             {
-                LoginHint = context.LoginHint,
+                LoginHint = loginHint,
                 Scopes = new List<string>(scopes)
             };
             await this.LocalStorage.SetItemAsync(TokenRequestInfo.CreateKey(this.ApplicationSettings.ClientId), requestInfo);
@@ -76,6 +97,26 @@ namespace Blazorade.Teams.Interop
             }
 
             return token;
+        }
+
+        public IEnumerable<string> GetScopes(IEnumerable<string> additionalScopes)
+        {
+            var scopes = new List<string>(additionalScopes ?? new string[0]);
+            foreach(var scope in this.ApplicationSettings.DefaultScopes ?? new string[0])
+            {
+                if (null == scopes.FirstOrDefault(x => x.ToLower() == scope?.ToLower()))
+                {
+                    scopes.Add(scope);
+                }
+            }
+
+            return scopes;
+        }
+
+        public IEnumerable<string> GetScopes(string additionalScopes = null)
+        {
+            var arr = (additionalScopes ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+            return this.GetScopes(from x in arr select x.Trim());
         }
 
         /// <summary>

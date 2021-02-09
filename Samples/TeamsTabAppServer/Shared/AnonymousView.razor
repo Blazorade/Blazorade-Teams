@@ -1,0 +1,17 @@
+﻿@inherits BlazoradeComponentBase
+
+<h1>Manual Authentication</h1>
+
+<p>
+    To manually start the authentication process as <em>@this.Context.Context.LoginHint</em>, click the button below.
+</p>
+<input type="button" value="Authenticate" @onclick="this.AuthenticateAsync" />
+
+@if(null != this.Token)
+{
+    <h2>Access Token</h2>
+    <ul>
+        <li>Expires: @this.Token.ExpiresOn</li>
+        <li>Scopes: @string.Join(", ", this.Token.Scopes)</li>
+    </ul>
+}

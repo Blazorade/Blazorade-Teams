@@ -150,6 +150,11 @@ namespace Blazorade.Teams.Components
                             await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.AuthFailed);
                         }
                     }
+                    else
+                    {
+                        this.ShowApplicationTemplate = true;
+                        this.StateHasChanged();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -199,41 +204,26 @@ namespace Blazorade.Teams.Components
         {
             AuthenticationResult token = null;
 
-            var arr = (this.RequireScopes ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var scopes = new List<string>(from x in arr select x.Trim());
-            if (this.RequireDefaultScopes)
-            {
-                foreach(var scope in this.AppOptions.DefaultScopes ?? new string[0])
-                {
-                    if(null == scopes.FirstOrDefault(x => x.ToLower() == scope?.ToLower()))
-                    {
-                        scopes.Add(scope);
-                    }
-                }
-            }
-            string loginHint = this.ApplicationContext?.Context?.LoginHint;
+            //---------------------------------------------------------------------------------------
+            // Construct the requested set of scopes from the default scopes and the additional
+            // scopes set on the current component instance.
+
+            var scopes = this.TeamsInterop.Authentication.GetScopes(this.RequireScopes);
+            //---------------------------------------------------------------------------------------
+
 
             //---------------------------------------------------------------------------------------
-            // First we try to get the token silently, if the token is cached by MSAL.
+            // We use the authentication module here, which will try to acquire the token we want
+            // without user interaction, but will fall back to using the authentication dialog
+            // if a token could not be acquired.
             try
             {
-                token = await this.MsalService.AcquireTokenSilentAsync(loginHint: loginHint, scopes: scopes);
+                token = await this.TeamsInterop.Authentication.AcquireTokenAsync(
+                    loginHint: this.ApplicationContext?.Context?.LoginHint, 
+                    scopes: scopes
+                );
             }
             catch { }
-            //---------------------------------------------------------------------------------------
-
-            //---------------------------------------------------------------------------------------
-            // If we could not get a token silently, which typically happens only the first time
-            // the user runs the application, we try to get the token using the dialog that 
-            // Teams provides.
-            if(null == token)
-            {
-                try
-                {
-                    token = await this.TeamsInterop.Authentication.AuthenticateAsync(scopes: scopes);
-                }
-                catch { }
-            }
             //---------------------------------------------------------------------------------------
 
             //---------------------------------------------------------------------------------------
