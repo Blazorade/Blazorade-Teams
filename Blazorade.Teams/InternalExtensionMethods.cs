@@ -1,4 +1,5 @@
-﻿using Blazorade.Teams.Configuration;
+﻿using Blazorade.Msal.Services;
+using Blazorade.Teams.Configuration;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,10 @@ namespace Blazorade.Teams
     internal static class InternalExtensionMethods
     {
 
+
+        public static string CreateKey(this TokenAcquisitionRequest request, string clientId)
+        {
+            return $"{clientId}.blazorade-teams.token-request-info";
+        }
     }
 }

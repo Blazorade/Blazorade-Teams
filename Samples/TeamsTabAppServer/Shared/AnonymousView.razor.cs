@@ -1,4 +1,5 @@
 ﻿using Blazorade.Msal.Security;
+using Blazorade.Msal.Services;
 using Blazorade.Teams.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -19,7 +20,12 @@ namespace TeamsTabAppServer.Shared
 
         private async Task AuthenticateAsync(MouseEventArgs e)
         {
-            this.Token = await this.Context.TeamsInterop.Authentication.AcquireTokenAsync(loginHint: this.Context.Context.LoginHint);
+            this.Token = await this.Context.TeamsInterop.Authentication.AcquireTokenAsync(new TokenAcquisitionRequest
+            {
+                LoginHint = this.Context.Context.LoginHint,
+                Prompt = LoginPrompt.Consent,
+                Timeout = 60000
+            });
             this.StateHasChanged();
         }
 

@@ -34,21 +34,32 @@ namespace Blazorade.Teams.Interop
 
         public async Task<AuthenticationResult> AcquireTokenAsync(string loginHint = null, IEnumerable<string> scopes = null)
         {
+            return await this.AcquireTokenAsync(new TokenAcquisitionRequest
+            {
+                LoginHint = loginHint,
+                Scopes = scopes
+            });
+        }
+
+        public async Task<AuthenticationResult> AcquireTokenAsync(TokenAcquisitionRequest request)
+        {
             AuthenticationResult token = null;
 
-            if(null == scopes)
+            if (null == request.Scopes)
             {
-                scopes = this.GetScopes();
+                request.Scopes = this.GetScopes();
             }
+
+            if(!(request?.Prompt).HasValue || request?.Prompt == LoginPrompt.None)
             try
             {
-                token = await this.MsalService.AcquireTokenSilentAsync(loginHint: loginHint, scopes: scopes);
+                token = await this.MsalService.AcquireTokenSilentAsync(request);
             }
             catch { }
 
-            if(null == token)
+            if (null == token)
             {
-                token = await this.AuthenticateAsync(loginHint: loginHint, scopes: scopes);
+                token = await this.AuthenticateAsync(request);
             }
 
             return token;
@@ -56,15 +67,21 @@ namespace Blazorade.Teams.Interop
 
         public async Task<AuthenticationResult> AuthenticateAsync(string loginHint = null, IEnumerable<string> scopes = null)
         {
-            scopes = scopes ?? this.ApplicationSettings.DefaultScopes;
-            var module = await this.GetBlazoradeTeamsJSModuleAsync();
-
-            var requestInfo = new TokenRequestInfo
+            return await this.AuthenticateAsync(new TokenAcquisitionRequest
             {
                 LoginHint = loginHint,
-                Scopes = new List<string>(scopes)
-            };
-            await this.LocalStorage.SetItemAsync(TokenRequestInfo.CreateKey(this.ApplicationSettings.ClientId), requestInfo);
+                Scopes = scopes
+            });
+        }
+
+        public async Task<AuthenticationResult> AuthenticateAsync(TokenAcquisitionRequest request)
+        {
+            request = request ?? new TokenAcquisitionRequest();
+
+            request.Scopes = request.Scopes ?? this.ApplicationSettings.DefaultScopes;
+            var module = await this.GetBlazoradeTeamsJSModuleAsync();
+
+            await this.LocalStorage.SetItemAsync(request.CreateKey(this.ApplicationSettings.ClientId), request);
 
             var data = new Dictionary<string, object>
             {
@@ -75,10 +92,10 @@ namespace Blazorade.Teams.Interop
             AuthenticationResult token = null;
             using (var handler = new DotNetInstanceCallbackHandler<string>(module, "authentication_authenticate", data))
             {
-                result = await handler.GetResultAsync();
+                result = await handler.GetResultAsync(timeout: request.Timeout);
             }
 
-            if(result?.Length > 0)
+            if (result?.Length > 0)
             {
                 try
                 {
@@ -87,7 +104,7 @@ namespace Blazorade.Teams.Interop
                 catch { }
             }
 
-            if(null == token)
+            if (null == token)
             {
                 try
                 {
