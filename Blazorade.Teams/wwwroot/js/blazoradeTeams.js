@@ -40,6 +40,27 @@ export function authentication_authenticate(args) {
     });
 }
 
+export function authentication_getAuthToken(args) {
+    console.debug("authentication_getAuthToken", args);
+
+    try {
+        microsoftTeams.authentication.getAuthToken({
+            successCallback: (token) => {
+                console.debug("authentication_getAuthToken", "success", token);
+                invokeCallback(args.successCallback, token);
+            },
+            failureCallback: (err) => {
+                console.error("authentication_getAuthToken", "failure", err);
+                invokeCallback(args.failureCallback, err);
+            }
+        });
+    }
+    catch (err) {
+        invokeCallback(args.failureCallback, err);
+    }
+
+}
+
 export function authentication_notifySuccess(result, callbackUrl) {
     console.debug("authentication_notifySuccess", result, callbackUrl);
     microsoftTeams.authentication.notifySuccess(result, callbackUrl);
@@ -49,6 +70,8 @@ export function authentication_notifyFailure(reason, callbackUrl) {
     console.debug("authentication_notifyFailure", reason, callbackUrl);
     microsoftTeams.authentication.notifyFailure(reason, callbackUrl);
 }
+
+
 
 export function appInitialization_notifyAppLoaded() {
     console.debug("appInitialization.notifyAppLoaded");

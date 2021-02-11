@@ -51,11 +51,13 @@ namespace Blazorade.Teams.Interop
             }
 
             if(!(request?.Prompt).HasValue || request?.Prompt == LoginPrompt.None)
-            try
             {
-                token = await this.MsalService.AcquireTokenSilentAsync(request);
+                try
+                {
+                    token = await this.MsalService.AcquireTokenSilentAsync(request);
+                }
+                catch { }
             }
-            catch { }
 
             if (null == token)
             {
