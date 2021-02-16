@@ -1,4 +1,4 @@
-﻿@page "/TabAppConfig"
+﻿@page "/tabconfig"
 
 @code{
     ApplicationContext Context;
@@ -30,8 +30,8 @@
         {
             var settings = new Settings
             {
-                ContentUrl = this.NavMan.ToAbsoluteUri("/TabApp").ToString(),
-                RemoveUrl = this.NavMan.ToAbsoluteUri("/TabAppRemove").ToString(),
+                ContentUrl = this.NavMan.ToAbsoluteUri("/tabapp").ToString(),
+                RemoveUrl = this.NavMan.ToAbsoluteUri("/tabremove").ToString(),
                 SuggestedDisplayName = name,
                 EntityId = "com.blazorade.teams.demo.tabapp"
             };

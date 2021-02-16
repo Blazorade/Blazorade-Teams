@@ -1,8 +1,8 @@
-﻿@page "/myinfo"
+﻿@page "/my/mail"
 
-<TeamsApplication RequireScopes="User.Read">
+<TeamsApplication RequireScopes="User.Read,Mail.Read">
     <ApplicationTemplate>
-        <UserInfoView Context="context" />
+        <MailView Context="context" />
     </ApplicationTemplate>
     <LoadingTemplate>
         <p>Loading...</p>

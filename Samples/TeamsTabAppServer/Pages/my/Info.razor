@@ -1,8 +1,8 @@
-﻿@page "/mycalendar"
+﻿@page "/my/info"
 
-<TeamsApplication RequireScopes="User.Read,Calendars.Read">
+<TeamsApplication RequireScopes="User.Read">
     <ApplicationTemplate>
-        <h2>My Calendar...</h2>
+        <UserInfoView Context="context" />
     </ApplicationTemplate>
     <LoadingTemplate>
         <p>Loading...</p>
