@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>1.0.0-rc-03</Version>
+    <Version>1.0.0-rc-04</Version>
     <Authors>Mika Berglund</Authors>
     <Company>Blazorade</Company>
     <Product>Blazorade Teams</Product>
@@ -13,7 +13,7 @@
     <RepositoryUrl>https://github.com/Blazorade/Blazorade-Teams</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>Blazor, Teams, Microsoft Teams</PackageTags>
-    <PackageReleaseNotes>This is a preview release.</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/Blazorade/Blazorade-Teams/releases/tag/v1.0.0-rc-04</PackageReleaseNotes>
     <Copyright>Copyright Blazorade, Mika Berglund</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
