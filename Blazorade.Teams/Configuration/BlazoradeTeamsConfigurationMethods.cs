@@ -34,6 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<SettingsModule>()
                 .AddScoped<AuthenticationModule>()
                 .AddScoped<LocalStorageService>()
+                .AddBlazoradeCore()
                 .AddBlazoradeMsal((sp, config) =>
                 {
                     var options = sp.GetService<BlazoradeTeamsOptions>();

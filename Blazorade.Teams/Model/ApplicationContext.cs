@@ -15,6 +15,8 @@ namespace Blazorade.Teams.Model
 
         public AuthenticationResult AuthResult { get; internal set; }
 
+        public TimeSpan? ClientTimeZoneOffset { get; set; }
+
         public BlazoradeTeamsInteropModule TeamsInterop { get; internal set; }
 
     }

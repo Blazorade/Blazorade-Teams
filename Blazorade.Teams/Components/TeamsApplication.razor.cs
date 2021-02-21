@@ -180,13 +180,25 @@ namespace Blazorade.Teams.Components
         /// </remarks>
         private async Task InitializeAsync()
         {
-
             //---------------------------------------------------------------------------------------
             // First we have to do some basic initialization. This will for instance remove the
             // loading icon from Teams so that the application can start rendering a UI.
             await this.TeamsInterop.InitializeAsync();
             await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
             //---------------------------------------------------------------------------------------
+
+
+            //---------------------------------------------------------------------------------------
+            // Now we'll get the client's time zone offset and store it in the application context
+            // so that it is available to code running later on.
+            try
+            {
+                this.ApplicationContext.ClientTimeZoneOffset = await this.LocalizationService
+                    .GetClientTimezoneOffsetAsync();
+            }
+            catch { }
+            //---------------------------------------------------------------------------------------
+
 
             //---------------------------------------------------------------------------------------
             // Now we'll get the context from Teams. When we have it, we'll store it in the
