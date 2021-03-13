@@ -22,68 +22,20 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds the necessary services required by Blazorade Teams.
         /// </summary>
-        /// <remarks>
-        /// If you require that your application users are properly authenticated, then you need to use the
-        /// other overloaded methods to specify the needed information.
-        /// </remarks>
-        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services)
+        public static IBlazoradeTeamsBuilder AddBlazoradeTeams(this IServiceCollection services)
         {
-            return services
-                .AddScoped<BlazoradeTeamsInteropModule>()
-                .AddScoped<ApplicationInitializationModule>()
-                .AddScoped<SettingsModule>()
-                .AddScoped<AuthenticationModule>()
-                .AddScoped<LocalStorageService>()
-                .AddBlazoradeCore()
-                .AddBlazoradeMsal((sp, config) =>
-                {
-                    var options = sp.GetService<BlazoradeTeamsOptions>();
-
-                    config.ClientId = options.ClientId;
-                    config.TenantId = options.TenantId;
-                    config.RedirectUrl = options.LoginUrl;
-                    config.DefaultScopes = options.DefaultScopes ?? config.DefaultScopes;
-
-                    // We need to use the authentication dialog provided by Teams, in which we will perform a redirect authentication.
-                    config.InteractiveLoginMode = InteractiveLoginMode.Redirect;
-
-                    // Because we need to share the tokens from the authentication dialog with the main application.
-                    config.TokenCacheScope = TokenCacheScope.Persistent; 
-                })
-                ;
+            return new BlazoradeTeamsBuilder
+            {
+                Services = services
+                    .AddBlazoradeCore()
+                    .AddSingleton<BlazoradeTeamsOptions>()
+                    .AddScoped<BlazoradeTeamsInteropModule>()
+                    .AddScoped<ApplicationInitializationModule>()
+                    .AddScoped<SettingsModule>()
+                    .AddScoped<AuthenticationModule>()
+                    .AddScoped<LocalStorageService>()
+            };
         }
 
-        /// <summary>
-        /// Adds services needed by Blazorade Teams and allows you to specify the application configuration required
-        /// in order to perform user authentication.
-        /// </summary>
-        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<BlazoradeTeamsOptions> config)
-        {
-            return services
-                .AddSingleton((p) =>
-                {
-                    var options = new BlazoradeTeamsOptions();
-                    config?.Invoke(options);
-                    return options;
-                })
-                .AddBlazoradeTeams();
-        }
-
-        /// <summary>
-        /// Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
-        /// using other services configured in the application.
-        /// </summary>
-        public static IServiceCollection AddBlazoradeTeams(this IServiceCollection services, Action<IServiceProvider, BlazoradeTeamsOptions> config)
-        {
-            return services
-                .AddSingleton((p) =>
-                {
-                    var options = new BlazoradeTeamsOptions();
-                    config?.Invoke(p, options);
-                    return options;
-                })
-                .AddBlazoradeTeams()
-                ;
-        }
     }
 }

@@ -105,6 +105,33 @@
             the loader icon from Teams so that your application can start displaying a UI.
             </remarks>
         </member>
+        <member name="T:Blazorade.Teams.Configuration.IBlazoradeTeamsBuilder">
+            <summary>
+            The interface that defines the startup configuration builder for Blazorade Teams.
+            </summary>
+        </member>
+        <member name="P:Blazorade.Teams.Configuration.IBlazoradeTeamsBuilder.Services">
+            <summary>
+            The service collection that the builder uses.
+            </summary>
+        </member>
+        <member name="M:Blazorade.Teams.Configuration.IBlazoradeTeamsBuilder.WithOptions(System.Action{Blazorade.Teams.Configuration.BlazoradeTeamsOptions})">
+            <summary>
+            Adds the necessary services required by Blazorade Teams.
+            </summary>
+            <param name="config">The delegate that will take care of setting the options for your application.</param>
+        </member>
+        <member name="M:Blazorade.Teams.Configuration.IBlazoradeTeamsBuilder.WithOptions(System.Action{System.IServiceProvider,Blazorade.Teams.Configuration.BlazoradeTeamsOptions})">
+            <summary>
+            
+            </summary>
+            <param name="config">The delegate that will take care of setting the options for your application.</param>
+        </member>
+        <member name="T:Blazorade.Teams.Configuration.BlazoradeTeamsBuilder">
+            <summary>
+            Default implementation of the <see cref="T:Blazorade.Teams.Configuration.IBlazoradeTeamsBuilder"/> interface.
+            </summary>
+        </member>
         <member name="T:Blazorade.Teams.Configuration.BlazoradeTeamsOptions">
             <summary>
             Options for configuring your application for authentication.
@@ -147,7 +174,7 @@
             Represents the authentication module in the Teams SDK.
             </summary>
         </member>
-        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime,Microsoft.AspNetCore.Components.NavigationManager,Blazorade.Msal.Services.BlazoradeMsalService,Blazorade.Teams.Interop.Internal.LocalStorageService)">
+        <member name="M:Blazorade.Teams.Interop.AuthenticationModule.#ctor(Blazorade.Teams.Configuration.BlazoradeTeamsOptions,Microsoft.JSInterop.IJSRuntime,Microsoft.AspNetCore.Components.NavigationManager,Blazorade.Teams.Interop.Internal.LocalStorageService,System.IServiceProvider)">
             <inheritdoc/>
         </member>
         <member name="M:Blazorade.Teams.Interop.AuthenticationModule.NotifyFailureAsync(System.String,System.String)">
@@ -609,22 +636,6 @@
         <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsConfigurationMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Adds the necessary services required by Blazorade Teams.
-            </summary>
-            <remarks>
-            If you require that your application users are properly authenticated, then you need to use the
-            other overloaded methods to specify the needed information.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsConfigurationMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Blazorade.Teams.Configuration.BlazoradeTeamsOptions})">
-            <summary>
-            Adds services needed by Blazorade Teams and allows you to specify the application configuration required
-            in order to perform user authentication.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.BlazoradeTeamsConfigurationMethods.AddBlazoradeTeams(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{System.IServiceProvider,Blazorade.Teams.Configuration.BlazoradeTeamsOptions})">
-            <summary>
-            Adds services need by Blazorade Teams and allows you to configure the Azure AD application associated with your application
-            using other services configured in the application.
             </summary>
         </member>
     </members>

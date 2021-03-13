@@ -4,6 +4,7 @@ using Blazorade.Msal.Services;
 using Blazorade.Teams.Configuration;
 using Blazorade.Teams.Interop.Internal;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,12 @@ namespace Blazorade.Teams.Interop
     public class AuthenticationModule : InteropModuleBase
     {
         /// <inheritdoc/>
-        public AuthenticationModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime, NavigationManager navMan, BlazoradeMsalService msalService, LocalStorageService localStorage) : base(appOptions, jsRuntime)
+        public AuthenticationModule(BlazoradeTeamsOptions appOptions, IJSRuntime jsRuntime, NavigationManager navMan, LocalStorageService localStorage, IServiceProvider serviceProvider) : base(appOptions, jsRuntime)
         {
             this.NavMan = navMan ?? throw new ArgumentNullException(nameof(navMan));
-            this.MsalService = msalService ?? throw new ArgumentNullException(nameof(msalService));
             this.LocalStorage = localStorage ?? throw new ArgumentNullException(nameof(localStorage));
+
+            this.MsalService = serviceProvider.GetService<BlazoradeMsalService>();
         }
 
 
@@ -52,6 +54,7 @@ namespace Blazorade.Teams.Interop
 
             if(!(request?.Prompt).HasValue || request?.Prompt == LoginPrompt.None)
             {
+                this.AssertMsalService();
                 try
                 {
                     token = await this.MsalService.AcquireTokenSilentAsync(request);
@@ -108,6 +111,7 @@ namespace Blazorade.Teams.Interop
 
             if (null == token)
             {
+                this.AssertMsalService();
                 try
                 {
                     token = await this.MsalService.AcquireTokenSilentAsync(fallbackToDefaultLoginHint: true);
@@ -167,5 +171,14 @@ namespace Blazorade.Teams.Interop
             await module.InvokeVoidAsync("authentication_notifySuccess", result, callbackUrl);
         }
 
+
+
+        private void AssertMsalService()
+        {
+            if(null == this.MsalService)
+            {
+                throw new Exception("The application uses functionality that requires authentication to be configured. Please use the AddBlazoradeTeams().WithOptions() method to configure options required for authentication.");
+            }
+        }
     }
 }
