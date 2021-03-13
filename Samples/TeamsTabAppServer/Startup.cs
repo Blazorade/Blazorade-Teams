@@ -22,17 +22,18 @@ namespace TeamsTabAppServer
             services
                 .AddRazorPages().Services
                 .AddServerSideBlazor().Services
-                .AddBlazoradeTeams((p, c) =>
-                {
-                    var root = p.GetService<IConfiguration>();
-                    var config = root.GetSection("teamsApp");
-                    c.ClientId = config.GetValue<string>("clientId");
-                    c.TenantId = config.GetValue<string>("tenantId");
+                .AddBlazoradeTeams()
+                    .WithOptions((p, c) =>
+                    {
+                        var root = p.GetService<IConfiguration>();
+                        var config = root.GetSection("teamsApp");
+                        config.Bind(c);
 
-                    c.LoginUrl = "/login";
-
-                    c.DefaultScopes = new string[] { "User.Read" };
-                });
+                        c.LoginUrl = "/login";
+                        c.DefaultScopes = new string[] { "User.Read" };
+                    })
+                //.AddBlazoradeTeams()
+                ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

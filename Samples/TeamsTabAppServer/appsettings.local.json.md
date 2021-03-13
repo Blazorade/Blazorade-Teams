@@ -14,11 +14,13 @@ The contents of that file must be:
 ```
 
 - `clientId`: The application ID or client ID of your application.
-- `tenantId`: The tenant your application is registered in. This can either be the tenant GUID, the default domain ([your tenant].onmicrosoft.com) or any vanity domain you have configured on your tenant.
+- `tenantId`: The tenant your application is registered in. This can either be the tenant GUID, the default domain (`[your tenant].onmicrosoft.com`) or any vanity domain you have configured on your tenant.
+
+For more details on configuring your application, see the [Blazorade Teams wiki](https://github.com/Blazorade/Blazorade-Teams/wiki/Getting-Started-Wiring-Up).
 
 ## Permissions to Microsoft Graph
 
-This application requires the following permissions to Microsoft Graph
+This sample application requires the following permissions to Microsoft Graph
 
 ### Delegated Permissions
 
