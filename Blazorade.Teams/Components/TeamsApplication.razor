@@ -9,9 +9,9 @@
 {
     @this.ApplicationTemplate(this.ApplicationContext)
 }
-else if (this.ShowHostNotAvailableTemplate && null != this.HostNotAvailableTemplate)
+else if(null != this.InitializationException && null != this.InitializationFailedTemplate)
 {
-    @this.HostNotAvailableTemplate
+    @this.InitializationFailedTemplate(this.InitializationException)
 }
 else if (null != this.LoadingTemplate)
 {

@@ -16,12 +16,6 @@ export function getContext(args) {
     });
 }
 
-export function isTeamsHostAvailable() {
-    let isHostAvailable = window.parent !== window.self && microsoftTeams !== undefined;
-    console.debug("isTeamsHostAvailable", isHostAvailable);
-    return isHostAvailable;
-}
-
 
 
 export function authentication_authenticate(args) {

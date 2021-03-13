@@ -70,13 +70,14 @@ namespace Blazorade.Teams.Components
         public RenderFragment<ApplicationContext> ApplicationTemplate { get; set; }
 
         /// <summary>
-        /// A template that you can use to provide alternative content in cases when the Teams host is not available.
+        /// The template that is rendered if initialization fails.
         /// </summary>
         /// <remarks>
-        /// This template is typically rendered when the application is not loaded by Teams.
+        /// The initialization typically fails if the application is loaded outside of Teams,
+        /// for instance when running as a standard web application.
         /// </remarks>
         [Parameter]
-        public RenderFragment HostNotAvailableTemplate { get; set; }
+        public RenderFragment<Exception> InitializationFailedTemplate { get; set; }
 
         /// <summary>
         /// The template that is displayed while loading the application.
@@ -112,9 +113,9 @@ namespace Blazorade.Teams.Components
         protected bool ShowApplicationTemplate { get; set; }
 
         /// <summary>
-        /// Determines whether to show the <see cref="HostNotAvailableTemplate"/> template.
+        /// Determines whether to show the <see cref="ContextNotAvailableTemplate"/> template.
         /// </summary>
-        protected bool ShowHostNotAvailableTemplate { get; set; }
+        protected bool ShowContextNotAvailableTemplate { get; set; }
 
 
 
@@ -133,11 +134,11 @@ namespace Blazorade.Teams.Components
 
         private async Task HandleMainProcessAsync()
         {
-            if(await this.TeamsInterop.IsTeamsHostAvailableAsync())
+            try
             {
-                try
+                if(await this.InitializeAsync())
                 {
-                    await this.InitializeAsync();
+                    this.StateHasChanged();
 
                     if (this.RequireDefaultScopes || this.RequireScopes?.Length > 0)
                     {
@@ -150,26 +151,19 @@ namespace Blazorade.Teams.Components
                             await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.AuthFailed);
                         }
                     }
-                    else
-                    {
-                        this.ShowApplicationTemplate = true;
-                        this.StateHasChanged();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
-                }
 
-                this.StateHasChanged();
+                    this.ShowApplicationTemplate = true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                this.ShowHostNotAvailableTemplate = true;
-                this.StateHasChanged();
+                await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Other);
             }
+
+            this.StateHasChanged();
         }
 
+        private Exception InitializationException;
         /// <summary>
         /// Handles application initialization.
         /// </summary>
@@ -178,38 +172,55 @@ namespace Blazorade.Teams.Components
         /// loaded. After this, other SDK functions can be used. This will also for instance remove 
         /// the loader icon from Teams so that your application can start displaying a UI.
         /// </remarks>
-        private async Task InitializeAsync()
+        private async Task<bool> InitializeAsync()
         {
             //---------------------------------------------------------------------------------------
             // First we have to do some basic initialization. This will for instance remove the
             // loading icon from Teams so that the application can start rendering a UI.
-            await this.TeamsInterop.InitializeAsync();
-            await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
-            //---------------------------------------------------------------------------------------
-
-
-            //---------------------------------------------------------------------------------------
-            // Now we'll get the client's time zone offset and store it in the application context
-            // so that it is available to code running later on.
             try
             {
-                this.ApplicationContext.ClientTimeZoneOffset = await this.LocalizationService
-                    .GetClientTimezoneOffsetAsync();
+                this.InitializationException = null;
+                await this.TeamsInterop.InitializeAsync();
+                await this.TeamsInterop.AppInitialization.NotifyAppLoadedAsync();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                this.InitializationException = ex;
+                await this.TeamsInterop.AppInitialization.NotifyFailureAsync(ex.Message, FailedReason.Timeout);
+            }
             //---------------------------------------------------------------------------------------
 
 
-            //---------------------------------------------------------------------------------------
-            // Now we'll get the context from Teams. When we have it, we'll store it in the
-            // application's context and call the StateHasChanged method. This will trigger
-            // a rerender of the component, in case the application wants to use the context for
-            // some purposes. Not all applications need authentication, you know.
-            var context = await this.TeamsInterop.GetContextAsync();
-            this.ApplicationContext.Context = context;
-            this.ApplicationContext.TeamsInterop = this.TeamsInterop;
-            this.StateHasChanged();
-            //---------------------------------------------------------------------------------------
+            if(null == this.InitializationException)
+            {
+                // If there was an error initializing, there is no point in continuing to set up
+                // the application, because everything will fail anyway.
+
+
+                //-----------------------------------------------------------------------------------
+                // Now we'll get the client's time zone offset and store it in the application
+                // context so that it is available to code running later on.
+                try
+                {
+                    this.ApplicationContext.ClientTimeZoneOffset = await this.LocalizationService
+                        .GetClientTimezoneOffsetAsync();
+                }
+                catch { }
+                //-----------------------------------------------------------------------------------
+
+
+                //-----------------------------------------------------------------------------------
+                // Now we'll get the context from Teams. When we have it, we'll store it in the
+                // application's context and call the StateHasChanged method. This will trigger
+                // a rerender of the component, in case the application wants to use the context for
+                // some purposes. Not all applications need authentication, you know.
+                var context = await this.TeamsInterop.GetContextAsync();
+                this.ApplicationContext.Context = context;
+                this.ApplicationContext.TeamsInterop = this.TeamsInterop;
+                //-----------------------------------------------------------------------------------
+            }
+
+            return null == this.InitializationException;
         }
 
         private async Task HandleAuthenticationAsync()
@@ -244,9 +255,6 @@ namespace Blazorade.Teams.Components
             this.ApplicationContext.AuthResult = token;
 
             await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
-
-            this.ShowApplicationTemplate = true;
-            this.StateHasChanged();
             //---------------------------------------------------------------------------------------
         }
 

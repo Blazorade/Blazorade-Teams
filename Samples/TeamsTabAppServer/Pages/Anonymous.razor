@@ -4,6 +4,10 @@
     <ApplicationTemplate>
         <AnonymousView Context="context" />
     </ApplicationTemplate>
+    <InitializationFailedTemplate>
+        <p>An error occurred during initialization.</p>
+        <pre>@context.ToString()</pre>
+    </InitializationFailedTemplate>
     <LoadingTemplate>
         Loading...
     </LoadingTemplate>

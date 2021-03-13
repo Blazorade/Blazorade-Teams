@@ -4,6 +4,10 @@
     <ApplicationTemplate>
         <UserInfoView Context="context" />
     </ApplicationTemplate>
+    <InitializationFailedTemplate>
+        <p>An error occurred during initialization.</p>
+        <pre>@context.ToString()</pre>
+    </InitializationFailedTemplate>
     <LoadingTemplate>
         <p>Loading...</p>
     </LoadingTemplate>

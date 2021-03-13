@@ -66,30 +66,10 @@ namespace Blazorade.Teams.Interop
         /// <remarks>
         /// This method is invoked for you when you use the <see cref="TeamsApplication"/> component.
         /// </remarks>
-        public async Task InitializeAsync()
+        public async Task InitializeAsync(int? timeout = 1000)
         {
             await new DotNetInstanceCallbackHandler(await this.GetBlazoradeTeamsJSModuleAsync(), "initialize")
-                .GetResultAsync();
-        }
-
-        /// <summary>
-        /// Determines whether the application has been loaded inside of Teams.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// If this method returns <c>false</c>, all the other methods on this module an its child modules
-        /// will also very likely fail.
-        /// </para>
-        /// <para>
-        /// You don't have to worry about this when using the <see cref="TeamsApplication"/> component as the
-        /// root component on your pages, and putting your application content in the
-        /// <see cref="TeamsApplication.ApplicationTemplate"/> template.
-        /// </para>
-        /// </remarks>
-        public async ValueTask<bool> IsTeamsHostAvailableAsync()
-        {
-            var module = await this.GetBlazoradeTeamsJSModuleAsync();
-            return await module.InvokeAsync<bool>("isTeamsHostAvailable");
+                .GetResultAsync(timeout: timeout);
         }
 
     }
