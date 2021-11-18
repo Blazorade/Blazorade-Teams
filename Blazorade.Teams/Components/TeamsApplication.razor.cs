@@ -152,6 +152,8 @@ namespace Blazorade.Teams.Components
                     }
                     else
                     {
+                        await this.TeamsInterop.AppInitialization.NotifySuccessAsync();
+
                         this.ShowApplicationTemplate = true;
                         this.StateHasChanged();
                     }
