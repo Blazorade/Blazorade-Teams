@@ -48,6 +48,12 @@
             to <c>true</c>, then the scopes acquired are combined with the default scopes.
             </summary>
         </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.UseSSO">
+            <summary>
+            Specifies whether to perform authentication using SSO
+            configured during application startup.
+            </summary>
+        </member>
         <member name="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate">
             <summary>
             The main template for your application.

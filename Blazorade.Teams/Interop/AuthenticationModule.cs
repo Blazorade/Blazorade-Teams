@@ -34,8 +34,17 @@ namespace Blazorade.Teams.Interop
         private readonly NavigationManager NavMan;
         private readonly LocalStorageService LocalStorage;
 
-        public async Task<AuthenticationResult> AcquireTokenAsync(string loginHint = null, IEnumerable<string> scopes = null)
+        public async Task<AuthenticationResult> AcquireTokenAsync(string loginHint = null, IEnumerable<string> scopes = null, bool useSso = false)
         {
+            if (useSso)
+            {
+                return await this.GetAuthTokenAsync(new TokenAcquisitionRequest
+                {
+                    LoginHint = loginHint,
+                    Scopes = scopes
+                });
+            }
+            
             return await this.AcquireTokenAsync(new TokenAcquisitionRequest
             {
                 LoginHint = loginHint,
@@ -121,7 +130,43 @@ namespace Blazorade.Teams.Interop
 
             return token;
         }
-
+        
+        public async Task<AuthenticationResult> GetAuthTokenAsync(TokenAcquisitionRequest request)
+        {
+            request = request ?? new TokenAcquisitionRequest();
+            request.Scopes = request.Scopes ?? this.ApplicationSettings.DefaultScopes;
+            var module = await this.GetBlazoradeTeamsJSModuleAsync();
+            await this.LocalStorage.SetItemAsync(request.CreateKey(this.ApplicationSettings.ClientId), request);
+            var data = new Dictionary<string, object>
+            {
+                { "url", this.NavMan.ToAbsoluteUri(this.ApplicationSettings.LoginUrl) }
+            };
+            string result = null;
+            AuthenticationResult token = null;
+            using (var handler = new DotNetInstanceCallbackHandler<string>(module, "authentication_getAuthToken", data))
+            {
+                result = await handler.GetResultAsync(timeout: request.Timeout);
+            }
+            if (result?.Length > 0)
+            {
+                try
+                {
+                    token = JsonSerializer.Deserialize<AuthenticationResult>(result);
+                }
+                catch { }
+            }
+            if (null == token)
+            {
+                this.AssertMsalService();
+                try
+                {
+                    token = await this.MsalService.AcquireTokenSilentAsync(fallbackToDefaultLoginHint: true);
+                }
+                catch { }
+            }
+            return token;
+        }
+        
         public IEnumerable<string> GetScopes(IEnumerable<string> additionalScopes)
         {
             var scopes = new List<string>(additionalScopes ?? new string[0]);
