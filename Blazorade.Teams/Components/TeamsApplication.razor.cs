@@ -61,10 +61,10 @@ namespace Blazorade.Teams.Components
         public string RequireScopes { get; set; }
         
         /// <summary>
-        /// Specifies whether to perform authentication using SSO
+        /// Specifies whether to perform authentication using Single Sign On. Instructions for configuring the Azure AD App Registration <see href="https://docs.microsoft.com/en-us/microsoftteams/platform/tabs/how-to/authentication/auth-aad-sso">here</see>.
         /// </summary>
         [Parameter]
-        public bool UseSSO { get; set; }
+        public bool UseSingleSignOn { get; set; }
         
         /// <summary>
         /// The main template for your application.
@@ -145,7 +145,7 @@ namespace Blazorade.Teams.Components
                 {
                     await this.InitializeAsync();
 
-                    if (this.RequireDefaultScopes || this.RequireScopes?.Length > 0 || this.UseSSO)
+                    if (this.RequireDefaultScopes || this.RequireScopes?.Length > 0 || this.UseSingleSignOn)
                     {
                         try
                         {
@@ -239,7 +239,7 @@ namespace Blazorade.Teams.Components
                 token = await this.TeamsInterop.Authentication.AcquireTokenAsync(
                     loginHint: this.ApplicationContext?.Context?.LoginHint, 
                     scopes: scopes,
-                    useSso: UseSSO
+                    useSso: UseSingleSignOn
                 );
             }
             catch { }
