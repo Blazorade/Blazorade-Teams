@@ -34,7 +34,6 @@ partial class UserInfoView
     public string Upn { get; set; }
 
 
-
     protected async override Task OnParametersSetAsync()
     {
         var authProvider = new AuthenticationProvider(this.Context, this.MsalService);

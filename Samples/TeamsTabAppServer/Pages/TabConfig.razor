@@ -1,6 +1,6 @@
 ﻿@page "/tabconfig"
 
-@code{
+@code {
     ApplicationContext Context;
 
     [Inject]
@@ -20,7 +20,7 @@
     {
         var name = e.Value as string;
         bool valid = name?.Length > 0;
-        if(valid != isValid)
+        if (valid != isValid)
         {
             isValid = valid;
             await this.Context.TeamsInterop.Settings.SetValidityStateAsync(isValid);
@@ -29,19 +29,21 @@
         if (isValid)
         {
             var settings = new Settings
-            {
-                ContentUrl = this.NavMan.ToAbsoluteUri("/tabapp").ToString(),
-                RemoveUrl = this.NavMan.ToAbsoluteUri("/tabremove").ToString(),
-                SuggestedDisplayName = name,
-                EntityId = "com.blazorade.teams.demo.tabapp"
-            };
+                {
+                    ContentUrl = this.NavMan.ToAbsoluteUri("/tabapp").ToString(),
+                    RemoveUrl = this.NavMan.ToAbsoluteUri("/tabremove").ToString(),
+                    SuggestedDisplayName = name,
+                    EntityId = "com.blazorade.teams.demo.tabapp"
+                };
             await this.Context.TeamsInterop.Settings.RegisterOnSaveHandlerAsync(settings, this.SavingAsync);
         }
     }
 }
 <TeamsApplication RequireAuthentication="true">
     <ApplicationTemplate>
-        @{ this.Context = context; }
+        @{
+            this.Context = context;
+        }
 
         <p>To be able to save the tab application, you need to set the name for it in the text field below.</p>
 

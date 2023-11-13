@@ -28,5 +28,4 @@ partial class AnonymousView
         });
         this.StateHasChanged();
     }
-
 }

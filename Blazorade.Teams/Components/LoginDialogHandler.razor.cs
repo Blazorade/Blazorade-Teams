@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 partial class LoginDialogHandler
 {
-
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);

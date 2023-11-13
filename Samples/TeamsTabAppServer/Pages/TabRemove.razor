@@ -18,12 +18,12 @@
         @{
             this.Context = context;
             this.Context.TeamsInterop.Settings
-                .RegisterOnRemoveHandlerAsync(this.RemovingAsync);
+            .RegisterOnRemoveHandlerAsync(this.RemovingAsync);
             this.Context.TeamsInterop.Settings
-                .SetValidityStateAsync(true);
+            .SetValidityStateAsync(true);
         }
         <p>
             If you click the Remove button below, this application will be removed.
         </p>
     </ApplicationTemplate>
-</TeamsApplication> 
+</TeamsApplication>

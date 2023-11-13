@@ -17,7 +17,6 @@ partial class MailView
     public IEnumerable<Message> Messages { get; set; }
 
 
-
     protected async override Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
