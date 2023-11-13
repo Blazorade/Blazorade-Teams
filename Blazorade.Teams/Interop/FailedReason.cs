@@ -1,15 +1,14 @@
-﻿using System;
+﻿namespace Blazorade.Teams.Interop;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blazorade.Teams.Interop
+public enum FailedReason
 {
-    public enum FailedReason
-    {
-        AuthFailed = 0,
-        Other = 1,
-        Timeout = 2
-    }
+    AuthFailed = 0,
+    Other = 1,
+    Timeout = 2
 }
