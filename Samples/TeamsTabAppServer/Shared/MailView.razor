@@ -3,10 +3,10 @@
 
 <h2>Mail</h2>
 
-@if(this.Messages?.Count() > 0)
+@if (this.Messages?.Count() > 0)
 {
     <ul>
-        @foreach(var msg in this.Messages)
+        @foreach (var msg in this.Messages)
         {
             <li>@msg.ReceivedDateTime | @msg.Sender.EmailAddress.Name (<a href="mailto:@msg.Sender.EmailAddress.Address">@msg.Sender.EmailAddress.Address</a>) | @msg.Subject</li>
         }
