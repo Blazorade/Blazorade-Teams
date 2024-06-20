@@ -1,3 +1,5 @@
+namespace TeamsTabAppClient;
+
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,29 +10,26 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TeamsTabAppClient
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+        builder.RootComponents.Add<App>("#app");
 
-            builder.Services
-                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-                .AddBlazoradeTeams()
-                    .WithOptions((sp, config) =>
-                    {
-                        var configService = sp.GetService<IConfiguration>();
-                        config.ClientId = configService.GetValue<string>("clientId");
-                        config.TenantId = configService.GetValue<string>("tenantId");
+        builder.Services
+            .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+            .AddBlazoradeTeams()
+                .WithOptions((sp, config) =>
+                {
+                    var configService = sp.GetService<IConfiguration>();
+                    config.ClientId = configService.GetValue<string>("clientId");
+                    config.TenantId = configService.GetValue<string>("tenantId");
 
-                        config.LoginUrl = "/login";
-                    })
-                ;
+                    config.LoginUrl = "/login";
+                })
+            ;
 
-            await builder.Build().RunAsync();
-        }
+        await builder.Build().RunAsync();
     }
 }
