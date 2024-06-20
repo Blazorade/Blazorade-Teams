@@ -48,6 +48,11 @@
             to <c>true</c>, then the scopes acquired are combined with the default scopes.
             </summary>
         </member>
+        <member name="P:Blazorade.Teams.Components.TeamsApplication.UseSingleSignOn">
+            <summary>
+            Specifies whether to perform authentication using Single Sign On. Instructions for configuring the Azure AD App Registration <see href="https://docs.microsoft.com/en-us/microsoftteams/platform/tabs/how-to/authentication/auth-aad-sso">here</see>.
+            </summary>
+        </member>
         <member name="P:Blazorade.Teams.Components.TeamsApplication.ApplicationTemplate">
             <summary>
             The main template for your application.
